@@ -1,0 +1,6 @@
+.tags
+lib-cov
+node_modules
+npm-debug.log
+.DS_Store
+.http*

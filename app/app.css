@@ -1,0 +1,34 @@
+ html, body {
+    padding: 0;
+    margin: 0;
+  }
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.body-container {
+  background-color: #CCC;
+  display: flex;
+}
+
+.header-container {
+  background-color: #DDD;
+  min-height: 50px;
+}
+
+.footer-container {
+  background-color: #555;
+  min-height: 25px;
+}
+
+.requests-container {
+  background-color:#888888;
+}
+
+.request-container {
+  background-color:#BBBBBB;
+}
+
+

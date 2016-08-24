@@ -1,0 +1,26 @@
+{
+  "name": "proxy",
+  "version": "1.0.0",
+  "description": "x-platform web debugging proxy and testing tool.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/niklasi/proxy.git"
+  },
+  "keywords": [
+    "proxy",
+    "debugging",
+    "testing",
+    "http(s)"
+  ],
+  "author": "Niklas Ingholt",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/niklasi/proxy/issues"
+  },
+  "homepage": "https://github.com/niklasi/proxy#readme",
+  "dependencies": {
+    "domready": "^1.0.8",
+    "http-mitm-proxy": "^0.5.1",
+    "ip": "^1.1.3"
+  }
+}
