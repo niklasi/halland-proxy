@@ -19,8 +19,5 @@
   },
   "homepage": "https://github.com/niklasi/proxy#readme",
   "dependencies": {
-    "domready": "^1.0.8",
-    "http-mitm-proxy": "^0.5.1",
-    "ip": "^1.1.3"
   }
 }

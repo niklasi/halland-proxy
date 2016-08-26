@@ -1,7 +1,6 @@
 const {app, BrowserWindow} = require('electron')
-// var shortcut = require('global-shortcut')
 
-let mainWindow = null
+let win = null
 
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') {
@@ -10,16 +9,13 @@ app.on('window-all-closed', function () {
 })
 
 app.on('ready', function () {
-  mainWindow = new BrowserWindow({width: 800, height: 600})
+  win = new BrowserWindow({width: 1200, height: 800})
 
-  mainWindow.loadURL('file://' + __dirname + '/index.html')
-  mainWindow.openDevTools()
+  win.loadURL('file://' + __dirname + '/index.html')
+  win.openDevTools()
 
-  // shortcut.register('f12', function () {
-  //   mainWindow.toggleDevTools()
-  // })
-
-  mainWindow.on('closed', function () {
-    mainWindow = null
+  win.on('closed', function () {
+    // proxy.close()
+    win = null
   })
 })
