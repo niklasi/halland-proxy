@@ -5,30 +5,26 @@
 
 .app-container {
   display: flex;
-  flex-direction: column;
 }
 
 .body-container {
-  background-color: #CCC;
   display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
-.header-container {
+.sidebar-container {
   background-color: #DDD;
+  width: 100px;
+  min-height: 200px;
+}
+
+.request-pane {
+  border: 1px black solid;
   min-height: 50px;
+  margin: 5px;
 }
 
-.footer-container {
-  background-color: #555;
-  min-height: 25px;
-}
 
-.requests-container {
-  background-color:#888888;
-}
-
-.request-container {
-  background-color:#BBBBBB;
-}
 
 
