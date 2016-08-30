@@ -1,4 +1,4 @@
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, globalShortcut} = require('electron')
 
 let win = null
 
@@ -12,7 +12,10 @@ app.on('ready', function () {
   win = new BrowserWindow({width: 640, height: 800})
 
   win.loadURL('file://' + __dirname + '/index.html')
-  win.openDevTools()
+
+  globalShortcut.register('f12', function () {
+    win.toggleDevTools()
+  })
 
   win.on('closed', function () {
     // proxy.close()
