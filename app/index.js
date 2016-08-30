@@ -9,7 +9,7 @@ app.on('window-all-closed', function () {
 })
 
 app.on('ready', function () {
-  win = new BrowserWindow({width: 1200, height: 800})
+  win = new BrowserWindow({width: 640, height: 800})
 
   win.loadURL('file://' + __dirname + '/index.html')
   win.openDevTools()
