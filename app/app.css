@@ -1,22 +1,22 @@
- html, body {
-    padding: 0;
+ html, body, #mount, .app-container {
     margin: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
   }
 
 .app-container {
   display: flex;
+  height: 100%;
 }
 
-.body-container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
+.main-container {
+  flex: 1;
 }
 
 .sidebar-container {
-  background-color: #DDD;
+  background-color: #777;
   width: 100px;
-  min-height: 200px;
 }
 
 .request-pane {
