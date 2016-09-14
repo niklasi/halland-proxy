@@ -1,5 +1,10 @@
 const {app, BrowserWindow, globalShortcut} = require('electron')
 
+const levelup = require('levelup')
+
+const db = levelup('./db')
+
+console.log(db)
 let win = null
 
 app.on('window-all-closed', function () {

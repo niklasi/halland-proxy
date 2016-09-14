@@ -1,16 +1,15 @@
 const React = require('react')
 const { render } = require('react-dom')
 const { Provider } = require('react-redux')
-const App = require('./containers/app')
-const configureStore = require('./store/configureStore')
-const {addRequest, addResponse} = require('./actions')
-const proxy = require('./proxy')()
+const App = require('./out/containers/app')
+const configureStore = require('./out/store/configureStore')
+const proxy = require('./out/proxy')()
 const injectTapEventPlugin = require('react-tap-event-plugin')
 const MuiThemeProvider = require('material-ui/styles/MuiThemeProvider').default
 
 injectTapEventPlugin()
 
-require('./components/title')()
+require('./out/components/title')()
 
 const store = configureStore()
 

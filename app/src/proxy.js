@@ -1,7 +1,3 @@
-// TODO: Fix this hack...
-// Use Electrons require instead of webpack...
-// const proxy = window.require('http-mitm-proxy')()
-
 const http = require('http')
 const url = require('url')
 const net = require('net')
