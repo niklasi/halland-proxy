@@ -19,11 +19,11 @@
   },
   "homepage": "https://github.com/niklasi/proxy#readme",
   "dependencies": {
+    "ip": "^1.1.3",
     "leveldown": "^1.4.6",
     "levelup": "^1.3.2",
-    "http-mitm-proxy": "^0.5.1",
-    "ip": "^1.1.3",
     "material-ui": "^0.15.4",
+    "memdown": "^1.2.2",
     "react": "^15.3.1",
     "react-dom": "^15.3.1",
     "react-redux": "^4.4.5",

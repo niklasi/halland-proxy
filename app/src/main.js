@@ -3,14 +3,17 @@ const { render } = require('react-dom')
 const { Provider } = require('react-redux')
 const App = require('./out/containers/app')
 const configureStore = require('./out/store/configureStore')
-const proxy = require('./out/proxy')()
+const createProxy = require('./out/proxy')
 const injectTapEventPlugin = require('react-tap-event-plugin')
 const MuiThemeProvider = require('material-ui/styles/MuiThemeProvider').default
+const levelup = require('levelup')
 
+const db = levelup('/tmp/halland-db', {db: require('memdown')})
 injectTapEventPlugin()
 
 require('./out/components/title')()
 
+window.__defineGetter__('db', () => db)
 const store = configureStore()
 
 //   const req = ctx.clientToProxyRequest
@@ -40,13 +43,15 @@ const store = configureStore()
 // })
 
 const port = 8888
-proxy.listen({port}, (err) => {
+createProxy({port}).listen((err) => {
   if (err) throw err
   console.log(`Renderer Server started on port ${port}...`)
 })
 
-render(<Provider store={store}>
-         <MuiThemeProvider>
-           <App />
-         </MuiThemeProvider>
-       </Provider>, document.getElementById('mount'))
+render(
+  <Provider store={store}>
+    <MuiThemeProvider>
+      <App />
+    </MuiThemeProvider>
+  </Provider>, document.getElementById('mount')
+)
