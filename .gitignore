@@ -4,4 +4,4 @@ node_modules
 npm-debug.log
 .DS_Store
 .http*
-app/dist
+app/out
