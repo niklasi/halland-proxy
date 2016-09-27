@@ -7,6 +7,8 @@ const createProxy = require('./out/proxy')
 const injectTapEventPlugin = require('react-tap-event-plugin')
 const MuiThemeProvider = require('material-ui/styles/MuiThemeProvider').default
 const levelup = require('levelup')
+const through = require('through2')
+const { addRequest, addResponse } = require('./out/actions')
 
 const db = levelup('/tmp/halland-db', {db: require('memdown')})
 injectTapEventPlugin()
@@ -16,36 +18,35 @@ require('./out/components/title')()
 window.__defineGetter__('db', () => db)
 const store = configureStore()
 
-//   const req = ctx.clientToProxyRequest
-//   const resp = ctx.proxyToClientResponse
-
-//   ctx.onResponseData((c, chunk, cb) => {
-//     console.log(chunk.toString())
-//     return cb(null, chunk)
-//   })
-
-//   store.dispatch(addRequest(req, resp))
-//   cb()
-// })
-
-//
-//   const req = ctx.clientToProxyRequest
-//   console.log('request', ctx)
-//   // store.dispatch(addRequest(req))
-//   cb()
-// })
-
-// proxy.onResponseEnd((ctx, cb) => {
-//   const resp = ctx.clientToProxyResponse
-//   console.log('Response', resp.headersSent)
-//   store.dispatch(addResponse(resp))
-//   cb()
-// })
-
-const port = 8888
-createProxy({port}).listen((err) => {
+const options = {
+  port: 8888,
+  requestStart: (request) => {
+    store.dispatch(addRequest(request))
+  },
+  requestPipe: [],
+  responsePipe: [
+    () => {
+      return through(function (chunk, enc, cb) {
+        console.log('plugin 1')
+        this.push(chunk)
+        cb()
+      })
+    },
+    () => {
+      return through(function (chunk, enc, cb) {
+        console.log('plugin 2')
+        this.push(chunk)
+        cb()
+      })
+    }
+  ],
+  responseDone: (response) => {
+    store.dispatch(addResponse(response))
+  }
+}
+createProxy(options, (err) => {
   if (err) throw err
-  console.log(`Renderer Server started on port ${port}...`)
+  console.log(`Renderer Server started on port ${options.port}...`)
 })
 
 render(

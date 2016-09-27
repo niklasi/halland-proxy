@@ -1,9 +1,9 @@
 module.exports = {
-  addRequest: (request, response) => {
-    return {type: 'ADD_REQUEST', request, response}
+  addRequest: (request) => {
+    return {type: 'ADD_REQUEST', payload: request}
   },
 
   addResponse: (response) => {
-    return {type: 'ADD_RESPONSE', response}
+    return {type: 'ADD_RESPONSE', payload: response}
   }
 }
