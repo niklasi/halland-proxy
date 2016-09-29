@@ -3,9 +3,14 @@ const url = require('url')
 const net = require('net')
 
 const noop = () => {}
+const transformHeaders = (headers) => {
+  return Object.keys(headers).map(header => {
+    return {key: header, value: headers[header]}
+  })
+}
 
 module.exports = ({ port = 8888, requestStart = noop, requestPipe = [], responsePipe = [], responseDone = noop }, cb) => {
-  const createProxy = (requestStart, requestPipe, responsePipe) => {
+  const createProxy = () => {
     const proxy = http.createServer((request, response) => {
       const options = {
         hostname: request.headers.host,
@@ -30,18 +35,22 @@ module.exports = ({ port = 8888, requestStart = noop, requestPipe = [], response
 
       proxyRequest.on('response', (proxyResponse) => {
         responsePipe.forEach(pipe => {
-          proxyResponse.pipe(pipe())
+          proxyResponse.pipe(pipe(requestData))
         })
 
-        const headers = Object.keys(proxyResponse.headers).map(header => {
-          return {key: header, value: proxyResponse.headers[header]}
-        })
-
+        const headers = transformHeaders(proxyResponse.headers)
         headers.forEach(header => response.setHeader(header.key, header.value))
 
-        proxyResponse.pipe(response)
+        response.on('finish', () => {
+          responseDone({
+            id: options.path,
+            headers,
+            statusCode: proxyResponse.statusCode,
+            statusMessage: proxyResponse.statusMessage
+          })
+        })
 
-        responseDone({id: options.path, headers, statusCode: proxyResponse.statusCode, statusMessage: proxyResponse.statusMessage})
+        proxyResponse.pipe(response)
       })
 
       requestPipe.forEach(pipe => {
@@ -49,11 +58,10 @@ module.exports = ({ port = 8888, requestStart = noop, requestPipe = [], response
       })
 
       const { hostname, method } = options
-      const headers = Object.keys(options.headers).map(header => {
-        return {key: header, value: options.headers[header]}
-      })
+      const headers = transformHeaders(options.headers)
 
-      requestStart({ id: options.path, hostname, method, headers, url: options.path })
+      const requestData = { id: options.path, hostname, method, headers, url: options.path }
+      requestStart(requestData)
       request.pipe(proxyRequest)
     })
 
