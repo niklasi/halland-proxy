@@ -6,38 +6,31 @@ const configureStore = require('./out/store/configureStore')
 const createProxy = require('./out/proxy')
 const injectTapEventPlugin = require('react-tap-event-plugin')
 const MuiThemeProvider = require('material-ui/styles/MuiThemeProvider').default
-const levelup = require('levelup')
 const through = require('through2')
 const { addRequest, addResponse } = require('./out/actions')
-const bytewise = require('bytewise')
+const openDb = require('./out/db')
+const config = require('./out/config')
+const plugins = require('./out/plugins')
 
-const db = levelup('/tmp/halland-db', {db: require('memdown'), keyEncoding: bytewise, valueEncoding: 'json'})
 injectTapEventPlugin()
 
 require('./out/components/title')()
 
+const db = openDb({path: '/tmp/halland-proxy', backingStore: 'filesystem'})
 window.__defineGetter__('db', () => db)
 const store = configureStore()
 
 const options = {
-  port: 8888,
+  port: config.port,
+  requestSetup: plugins.requestSetup,
   requestStart: (request) => {
     db.put(`${request.id}!request!meta`, request)
     store.dispatch(addRequest(request))
   },
-  requestPipe: [
-    (request) => {
-      let chunkIndex = 0
-      return through(function (chunk, enc, cb) {
-        db.put(`${request.id}!request!body!${chunkIndex}`, chunk)
-        chunkIndex += 1
-        this.push(chunk)
-        cb()
-      })
-    }
-  ],
+  requestPipe: plugins.requestPipe,
+  responseHeaders: plugins.responseHeaders,
   responsePipe: [
-    (request) => {
+    (request, responseHeaders) => {
       let chunkIndex = 0
       return through(function (chunk, enc, cb) {
         db.put(`${request.id}!response!body!${chunkIndex}`, chunk)
@@ -45,22 +38,7 @@ const options = {
         this.push(chunk)
         cb()
       })
-    },
-    (request) => {
-      return through(function (chunk, enc, cb) {
-        console.log('plugin 1')
-        this.push(chunk)
-        cb()
-      })
-    },
-    (request) => {
-      return through(function (chunk, enc, cb) {
-        console.log('plugin 2')
-        this.push(chunk)
-        cb()
-      })
-    }
-  ],
+    }].concat(plugins.responsePipe),
   responseDone: (response) => {
     db.put(`${response.id}!response!meta`, response)
     store.dispatch(addResponse(response))
