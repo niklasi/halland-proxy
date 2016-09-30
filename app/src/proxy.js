@@ -19,6 +19,7 @@ const transformHeaders = (headers) => {
 
 module.exports = ({
   port = 8888,
+  requestSetup = [],
   requestStart = noop,
   requestPipe = [],
   responseHeaders = [],
@@ -27,12 +28,16 @@ module.exports = ({
   cb) => {
   const createProxy = () => {
     const proxy = http.createServer((request, response) => {
-      const options = {
+      const defaultOptions = {
         hostname: request.headers.host,
         method: request.method,
         headers: request.headers,
         path: request.url
       }
+
+      const options = requestSetup.reduce((o, transform) => {
+        return transform(o)
+      }, defaultOptions)
 
       let proxyRequest = http.request(options)
 
