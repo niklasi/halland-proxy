@@ -4,9 +4,14 @@ const {Tabs, Tab} = require('material-ui/Tabs')
 
 /* eslint-disable react/jsx-indent */
 module.exports = ({ request, response = { headers: [] } }) => {
+  const transformHeaders = (headers) => {
+    return Object.keys(headers).map(header => {
+      return {key: header, value: headers[header]}
+    })
+  }
+
   const headerMapper = (header, index) => <li key={`${header.key}-${index}`}>{`${header.key}: ${header.value}`}</li>
 
-  console.log('response', response)
   return <Card>
            <CardHeader
              title={request.url}
@@ -17,12 +22,12 @@ module.exports = ({ request, response = { headers: [] } }) => {
             <Tabs>
               <Tab label='Request'>
                 <ul>
-                  {request.headers.map(headerMapper)}
+                  {transformHeaders(request.headers).map(headerMapper)}
                 </ul>
               </Tab>
               <Tab label='Response'>
                 <ul>
-                  {response.headers.map(headerMapper)}
+                  {transformHeaders(response.headers).map(headerMapper)}
                 </ul>
                 {request.url}
               </Tab>

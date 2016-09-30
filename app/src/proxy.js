@@ -39,12 +39,12 @@ module.exports = ({
       proxyRequest.on('response', (proxyResponse) => {
         const headers = responseHeaders.reduce((headers, transform) => {
           return transform(headers)
-        }, transformHeaders(proxyResponse.headers))
+        }, proxyResponse.headers)
 
-        headers.forEach(header => response.setHeader(header.key, header.value))
+        transformHeaders(headers).forEach(header => response.setHeader(header.key, header.value))
 
         responsePipe.reduce((r, p) => {
-          return r.pipe(p(requestData, proxyResponse.headers) || createNoopStream())
+          return r.pipe(p(requestData, headers) || createNoopStream())
         }, proxyResponse).pipe(response)
 
         response.on('finish', () => {
@@ -58,9 +58,8 @@ module.exports = ({
       })
 
       const { hostname, method } = options
-      const headers = transformHeaders(options.headers)
 
-      const requestData = { id: options.path, hostname, method, headers, url: options.path }
+      const requestData = { id: options.path, hostname, method, headers: options.headers, url: options.path }
       requestStart(requestData)
 
       requestPipe.reduce((r, p) => {
