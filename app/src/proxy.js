@@ -17,7 +17,14 @@ const transformHeaders = (headers) => {
   })
 }
 
-module.exports = ({ port = 8888, requestStart = noop, requestPipe = [], responsePipe = [], responseDone = noop }, cb) => {
+module.exports = ({
+  port = 8888,
+  requestStart = noop,
+  requestPipe = [],
+  responseHeaders = [],
+  responsePipe = [],
+  responseDone = noop },
+  cb) => {
   const createProxy = () => {
     const proxy = http.createServer((request, response) => {
       const options = {
@@ -30,11 +37,14 @@ module.exports = ({ port = 8888, requestStart = noop, requestPipe = [], response
       let proxyRequest = http.request(options)
 
       proxyRequest.on('response', (proxyResponse) => {
-        const headers = transformHeaders(proxyResponse.headers)
+        const headers = responseHeaders.reduce((headers, transform) => {
+          return transform(headers)
+        }, transformHeaders(proxyResponse.headers))
+
         headers.forEach(header => response.setHeader(header.key, header.value))
 
-        responsePipe.reduce((proxyResp, pipe) => {
-          return proxyResp.pipe(pipe(requestData, proxyResponse.headers) || createNoopStream())
+        responsePipe.reduce((r, p) => {
+          return r.pipe(p(requestData, proxyResponse.headers) || createNoopStream())
         }, proxyResponse).pipe(response)
 
         response.on('finish', () => {
@@ -74,6 +84,6 @@ module.exports = ({ port = 8888, requestStart = noop, requestPipe = [], response
     return proxy
   }
 
-  const proxy = createProxy(requestStart, requestPipe, responsePipe)
+  const proxy = createProxy()
   proxy.listen(port, cb)
 }
