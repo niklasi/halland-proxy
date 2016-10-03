@@ -10,7 +10,7 @@ const through = require('through2')
 const { addRequest, addResponse } = require('./out/actions')
 const openDb = require('./out/db')
 const config = require('./out/config')()
-const plugins = require('./out/plugins')
+const loadPlugins = require('./out/plugins')
 
 injectTapEventPlugin()
 
@@ -19,6 +19,7 @@ require('./out/components/title')()
 const db = openDb({path: config.db.path, backingStore: config.db.backingStore})
 window.__defineGetter__('db', () => db)
 const store = configureStore()
+const plugins = loadPlugins(config)
 
 const options = {
   port: config.port,

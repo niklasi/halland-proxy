@@ -30,9 +30,7 @@ module.exports = ({
     const requestCounter = new Map()
 
     const nextId = (url) => {
-      console.log('has key', requestCounter.has(url))
       let counter = requestCounter.get(url) || 0
-      console.log('counter', counter, requestCounter.get(url))
       requestCounter.set(url, ++counter)
       return `${url}-${counter}`
     }
