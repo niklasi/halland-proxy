@@ -27,6 +27,16 @@ module.exports = ({
   responseDone = noop },
   cb) => {
   const createProxy = () => {
+    const requestCounter = new Map()
+
+    const nextId = (url) => {
+      console.log('has key', requestCounter.has(url))
+      let counter = requestCounter.get(url) || 0
+      console.log('counter', counter, requestCounter.get(url))
+      requestCounter.set(url, ++counter)
+      return `${url}-${counter}`
+    }
+
     const proxy = http.createServer((request, response) => {
       const defaultOptions = {
         hostname: request.headers.host,
@@ -34,6 +44,9 @@ module.exports = ({
         headers: request.headers,
         path: request.url
       }
+
+      const id = nextId(request.url)
+      console.log('id', id)
 
       const options = requestSetup.reduce((o, transform) => {
         return transform(o)
@@ -54,7 +67,7 @@ module.exports = ({
 
         response.on('finish', () => {
           responseDone({
-            id: options.path,
+            id,
             headers,
             statusCode: proxyResponse.statusCode,
             statusMessage: proxyResponse.statusMessage
@@ -64,7 +77,7 @@ module.exports = ({
 
       const { hostname, method } = options
 
-      const requestData = { id: options.path, hostname, method, headers: options.headers, url: options.path }
+      const requestData = { id, hostname, method, headers: options.headers, url: options.path }
       requestStart(requestData)
 
       requestPipe.reduce((r, p) => {
