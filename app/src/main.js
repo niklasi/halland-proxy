@@ -9,14 +9,14 @@ const MuiThemeProvider = require('material-ui/styles/MuiThemeProvider').default
 const through = require('through2')
 const { addRequest, addResponse } = require('./out/actions')
 const openDb = require('./out/db')
-const config = require('./out/config')
+const config = require('./out/config')()
 const plugins = require('./out/plugins')
 
 injectTapEventPlugin()
 
 require('./out/components/title')()
 
-const db = openDb({path: '/tmp/halland-proxy', backingStore: 'filesystem'})
+const db = openDb({path: config.db.path, backingStore: config.db.backingStore})
 window.__defineGetter__('db', () => db)
 const store = configureStore()
 
