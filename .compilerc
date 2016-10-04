@@ -1,0 +1,16 @@
+{
+  "env": {
+    "development": {
+      "application/javascript": {
+        "presets": ["react"],
+        "sourceMaps": "inline"
+      }
+    },
+    "production": {
+      "application/javascript": {
+        "presets": ["react"],
+        "sourceMaps": false
+      }
+    }
+  }
+}

@@ -1,10 +1,10 @@
 {
-  "name": "proxy",
+  "name": "hallandproxy",
   "version": "1.0.0",
   "description": "x-platform web debugging proxy and testing tool.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/niklasi/proxy.git"
+    "url": "git+https://github.com/niklasi/hallandproxy.git"
   },
   "keywords": [
     "proxy",
@@ -15,9 +15,10 @@
   "author": "Niklas Ingholt",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/niklasi/proxy/issues"
+    "url": "https://github.com/niklasi/hallandproxy/issues"
   },
-  "homepage": "https://github.com/niklasi/proxy#readme",
+  "homepage": "https://github.com/niklasi/hallandproxy#readme",
+  "main": "index.js",
   "dependencies": {
     "bytewise": "^1.1.0",
     "connect": "^3.5.0",

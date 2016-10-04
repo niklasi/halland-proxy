@@ -44,7 +44,6 @@ module.exports = ({
       }
 
       const id = nextId(request.url)
-      console.log('id', id)
 
       const options = requestSetup.reduce((o, transform) => {
         return transform(o)
