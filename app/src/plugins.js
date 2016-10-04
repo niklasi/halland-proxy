@@ -1,8 +1,11 @@
 const { homedir } = require('os')
 const { resolve, basename } = require('path')
+const mkdirp = require('mkdirp')
 
 module.exports = (config) => {
   const pluginDir = resolve(homedir(), '.halland-proxy-plugins')
+
+  mkdirp.sync(pluginDir)
 
   const paths = config.plugins.map(plugin => {
     return resolve(pluginDir, 'node_modules', plugin.split('#')[0])
