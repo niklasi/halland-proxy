@@ -4,7 +4,7 @@
   "description": "x-platform web debugging proxy and testing tool.",
   "scripts": {
     "postinstall": "install-app-deps",
-    "test": "tap test/",
+    "test": "tap test/test-*.js",
     "start": "electron ."
   },
   "repository": {
@@ -25,9 +25,12 @@
   "homepage": "https://github.com/niklasi/hallandproxy#readme",
   "main": "app/index.js",
   "devDependencies": {
-    "electron-prebuilt-compile": "^1.4.0",
     "electron-builder": "^5.30.0",
-    "standard": "^8.0.0"
+    "electron-prebuilt-compile": "^1.4.0",
+    "request": "^2.75.0",
+    "standard": "^8.0.0",
+    "tap": "^7.1.2",
+    "through2": "^2.0.1"
   },
   "dependencies": {},
   "build": {

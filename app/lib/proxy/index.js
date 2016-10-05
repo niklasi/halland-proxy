@@ -4,7 +4,7 @@ const net = require('net')
 const through = require('through2')
 
 const noop = () => {}
-const createNoopStream = () => {
+const noopStream = () => {
   return through(function (chunk, enc, cb) {
     this.push(chunk)
     cb()
@@ -18,7 +18,7 @@ const transformHeaders = (headers) => {
 }
 
 module.exports = ({
-  port = 8888,
+  port = 0,
   requestSetup = [],
   requestStart = noop,
   requestPipe = [],
@@ -36,8 +36,11 @@ module.exports = ({
     }
 
     const proxy = http.createServer((request, response) => {
+      const requestInfo = url.parse(request.url)
+
       const defaultOptions = {
-        hostname: request.headers.host,
+        hostname: requestInfo.hostname,
+        port: requestInfo.port,
         method: request.method,
         headers: request.headers,
         path: request.url
@@ -51,7 +54,7 @@ module.exports = ({
 
       let proxyRequest = http.request(options)
 
-      proxyRequest.on('response', (proxyResponse) => {
+      const onResponse = (proxyResponse) => {
         const headers = responseHeaders.reduce((headers, transform) => {
           return transform(headers)
         }, proxyResponse.headers)
@@ -59,7 +62,8 @@ module.exports = ({
         transformHeaders(headers).forEach(header => response.setHeader(header.key, header.value))
 
         responsePipe.reduce((r, p) => {
-          return r.pipe(p(requestData, headers) || createNoopStream())
+          const transform = p(requestData, headers) || noopStream()
+          return r.pipe(transform)
         }, proxyResponse).pipe(response)
 
         response.on('finish', () => {
@@ -70,15 +74,17 @@ module.exports = ({
             statusMessage: proxyResponse.statusMessage
           })
         })
-      })
+      }
 
-      const { hostname, method } = options
+      proxyRequest.on('response', onResponse)
+      const { hostname, method, headers, port } = options
 
-      const requestData = { id, hostname, method, headers: options.headers, url: options.path }
+      const requestData = { id, hostname, method, headers, port, url: options.path }
       requestStart(requestData)
 
       requestPipe.reduce((r, p) => {
-        return r.pipe(p() || createNoopStream())
+        const transform = p() || noopStream()
+        return r.pipe(transform)
       }, request).pipe(proxyRequest)
     })
 
@@ -99,5 +105,7 @@ module.exports = ({
   }
 
   const proxy = createProxy()
-  proxy.listen(port, cb)
+  proxy.listen(port, () => {
+    if (cb) return cb(null, proxy)
+  })
 }
