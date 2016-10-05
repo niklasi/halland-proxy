@@ -17,7 +17,6 @@ injectTapEventPlugin()
 require('./components/title')()
 
 const db = openDb({path: config.db.path, backingStore: config.db.backingStore})
-window.__defineGetter__('db', () => db)
 const store = configureStore()
 const plugins = loadPlugins(config)
 
