@@ -8,7 +8,7 @@ const setup = (options, cb) => {
     cb = options
     options = {}
   }
-  options.port = options.port || 0
+
   const server = http.createServer()
 
   const serverStarted = () => {
