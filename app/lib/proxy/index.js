@@ -1,15 +1,7 @@
 const http = require('http')
-const url = require('url')
+const { parse: urlParser } = require('url')
 const net = require('net')
 const through = require('through2')
-
-const noop = () => {}
-const noopStream = () => {
-  return through(function (chunk, enc, cb) {
-    this.push(chunk)
-    cb()
-  })
-}
 
 const transformHeaders = (headers) => {
   return Object.keys(headers).map(header => {
@@ -17,94 +9,108 @@ const transformHeaders = (headers) => {
   })
 }
 
-module.exports = ({
-  port = 0,
-  requestSetup = [],
-  requestStart = noop,
-  requestPipe = [],
-  responseHeaders = [],
-  responsePipe = [],
-  responseDone = noop },
-  cb) => {
-  const createProxy = () => {
-    const requestCounter = new Map()
+const createProxy = ({ createRequestOptions, requestStart, createRequestPipe, createResponseHeaders, createResponsePipe, responseDone }) => {
+  const requestCounter = new Map()
 
-    const nextId = (url) => {
-      let counter = requestCounter.get(url) || 0
-      requestCounter.set(url, ++counter)
-      return `${url}-${counter}`
+  const nextId = (url) => {
+    let counter = requestCounter.get(url) || 0
+    requestCounter.set(url, ++counter)
+    return `${url}-${counter}`
+  }
+
+  const proxy = http.createServer((request, response) => {
+    const requestInfo = urlParser(request.url)
+
+    const defaultRequestOptions = {
+      hostname: requestInfo.hostname,
+      port: requestInfo.port,
+      method: request.method,
+      headers: request.headers,
+      path: request.url
     }
 
-    const proxy = http.createServer((request, response) => {
-      const requestInfo = url.parse(request.url)
+    const id = nextId(request.url)
 
-      const defaultOptions = {
-        hostname: requestInfo.hostname,
-        port: requestInfo.port,
-        method: request.method,
-        headers: request.headers,
-        path: request.url
-      }
+    const requestOptions = createRequestOptions(defaultRequestOptions)
 
-      const id = nextId(request.url)
-
-      const options = requestSetup.reduce((o, transform) => {
-        return transform(o)
-      }, defaultOptions)
-
-      let proxyRequest = http.request(options)
-
-      const onResponse = (proxyResponse) => {
-        const headers = responseHeaders.reduce((headers, transform) => {
-          return transform(headers)
-        }, proxyResponse.headers)
+    const proxyRequest = http.request(requestOptions)
+      .on('response', (proxyResponse) => {
+        const headers = createResponseHeaders(proxyResponse.headers)
 
         transformHeaders(headers).forEach(header => response.setHeader(header.key, header.value))
 
-        responsePipe.reduce((r, p) => {
-          const transform = p(requestData, headers) || noopStream()
-          return r.pipe(transform)
-        }, proxyResponse).pipe(response)
+        createResponsePipe(proxyResponse, requestData, headers).pipe(response)
 
-        response.on('finish', () => {
-          responseDone({
-            id,
-            headers,
-            statusCode: proxyResponse.statusCode,
-            statusMessage: proxyResponse.statusMessage
-          })
-        })
-      }
-
-      proxyRequest.on('response', onResponse)
-      const { hostname, method, headers, port } = options
-
-      const requestData = { id, hostname, method, headers, port, url: options.path }
-      requestStart(requestData)
-
-      requestPipe.reduce((r, p) => {
-        const transform = p() || noopStream()
-        return r.pipe(transform)
-      }, request).pipe(proxyRequest)
-    })
-
-    proxy.on('connect', (req, cltSocket, head) => {
-      const srvUrl = url.parse(`https://${req.url}`)
-      console.log('connect', srvUrl)
-      const srvSocket = net.connect(srvUrl.port, srvUrl.hostname, () => {
-        cltSocket.write('HTTP/1.1 200 Connection Established\r\n' +
-          'Proxy-agent: Halland-Proxy\r\n' +
-          '\r\n')
-        srvSocket.write(head)
-        srvSocket.pipe(cltSocket)
-        cltSocket.pipe(srvSocket)
+        response.on('finish', () => responseDone({ id, headers, statusCode: proxyResponse.statusCode, statusMessage: proxyResponse.statusMessage }))
       })
-    })
 
-    return proxy
+    const { hostname, method, headers, port, path: url } = requestOptions
+
+    const requestData = { id, hostname, method, headers, port, url }
+    requestStart(requestData)
+
+    createRequestPipe(request).pipe(proxyRequest)
+  })
+
+  proxy.on('connect', (req, cltSocket, head) => {
+    const srvUrl = urlParser(`https://${req.url}`)
+    console.log('connect', srvUrl)
+    const srvSocket = net.connect(srvUrl.port, srvUrl.hostname, () => {
+      cltSocket.write('HTTP/1.1 200 Connection Established\r\n' +
+        'Proxy-agent: Halland-Proxy\r\n' +
+          '\r\n')
+      srvSocket.write(head)
+      srvSocket.pipe(cltSocket)
+      cltSocket.pipe(srvSocket)
+    })
+  })
+
+  return proxy
+}
+
+const noopStream = () => {
+  return through(function (chunk, enc, cb) {
+    this.push(chunk)
+    cb()
+  })
+}
+
+const createRequestOptions = (requestSetup) => {
+  return (defaultRequestOptions) => requestSetup.reduce((o, transform) => { return transform(o) }, defaultRequestOptions)
+}
+
+const createRequestPipe = (requestPipe) => {
+  return (request) => requestPipe.reduce((r, p) => {
+    return r.pipe(p() || noopStream())
+  }, request)
+}
+
+const createResponseHeaders = (responseHeaders) => {
+  return (proxyResponseHeaders) => responseHeaders.reduce((headers, transform) => { return transform(headers) }, proxyResponseHeaders)
+}
+
+const createResponsePipe = (responsePipe) => {
+  return (proxyResponse, requestData, headers) => {
+    return responsePipe.reduce((r, p) => {
+      return r.pipe(p(requestData, headers) || noopStream())
+    }, proxyResponse)
+  }
+}
+
+const noop = () => {}
+
+module.exports = ({ port = 0, requestSetup = [], requestStart = noop, requestPipe = [], responseHeaders = [], responsePipe = [], responseDone = noop }, cb) => {
+  const options = {
+    createRequestOptions: createRequestOptions(requestSetup),
+    requestStart,
+    createRequestPipe: createRequestPipe(requestPipe),
+    createResponseHeaders: createResponseHeaders(responseHeaders),
+    createResponsePipe: createResponsePipe(responsePipe),
+    responseDone
   }
 
-  const proxy = createProxy()
+  const proxy = createProxy(options)
+
   proxy.listen(port, () => {
     if (cb) return cb(null, proxy)
   })
