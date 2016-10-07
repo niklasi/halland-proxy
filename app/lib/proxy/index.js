@@ -39,9 +39,12 @@ const createProxy = ({ createRequestOptions, requestStart, createRequestPipe, cr
 
         transformHeaders(headers).forEach(header => response.setHeader(header.key, header.value))
 
-        createResponsePipe(proxyResponse, requestData, headers).pipe(response)
+        const responseData = []
+        createResponsePipe(proxyResponse, requestData, headers)
+          .on('data', (data) => responseData.push(data))
+          .pipe(response)
 
-        response.on('finish', () => responseDone({ id, headers, statusCode: proxyResponse.statusCode, statusMessage: proxyResponse.statusMessage }))
+        response.on('finish', () => responseDone({ id, headers, statusCode: proxyResponse.statusCode, statusMessage: proxyResponse.statusMessage, body: Buffer.concat(responseData) }))
       })
 
     const { hostname, method, headers, port, path: url } = requestOptions

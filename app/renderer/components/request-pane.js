@@ -1,6 +1,7 @@
 const React = require('react')
 const {Card, CardHeader, CardText} = require('material-ui/Card')
 const {Tabs, Tab} = require('material-ui/Tabs')
+const Response = require('./response')
 
 /* eslint-disable react/jsx-indent */
 module.exports = ({ request, response = { headers: [] } }) => {
@@ -29,7 +30,7 @@ module.exports = ({ request, response = { headers: [] } }) => {
                 <ul>
                   {transformHeaders(response.headers).map(headerMapper)}
                 </ul>
-                {request.url}
+                <Response response={response} />
               </Tab>
             </Tabs>
            </CardText>
