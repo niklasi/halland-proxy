@@ -22,7 +22,7 @@ module.exports = (config) => {
     let plugin
     const name = basename(path)
     try {
-      plugin = require(path)
+      plugin = require(path)()
     } catch (err) {
       console.log(`Failed to load plugin ${name}.`)
     }
