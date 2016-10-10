@@ -15,7 +15,7 @@ module.exports = ({ request, response = { headers: [] } }) => {
 
   return <Card>
            <CardHeader
-             title={request.url}
+             title={request.href}
              subtitle={`${request.method} ${response.statusCode}`}
              actAsExpander
              showExpandableButton />
