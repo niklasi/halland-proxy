@@ -3,17 +3,21 @@ const { connect } = require('react-redux')
 const RequestsContainer = require('./requests')
 const SidebarContainer = require('./sidebar')
 const AppBar = require('material-ui/AppBar').default
+const IconButton = require('material-ui/IconButton').default
+const SearchIcon = require('material-ui/svg-icons/action/search').default
 
 const titleStyle = {
-  textAlign: 'center',
-  height: '40px',
-  lineHeight: '40px'
+  textAlign: 'center'
 }
 /* eslint-disable react/jsx-indent */
 const App = ({ requests }) => <div className='app-container'>
                               <SidebarContainer />
                               <main className='main-container'>
-                                <AppBar showMenuIconButton={false} titleStyle={titleStyle} title='Requests' />
+                                <AppBar showMenuIconButton={false}
+                                  titleStyle={titleStyle}
+                                  title='Requests'
+                                  iconElementRight={<IconButton><SearchIcon /></IconButton>}
+                                  />
                                 <RequestsContainer requests={requests} />
                               </main>
                             </div>
