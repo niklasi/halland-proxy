@@ -19,15 +19,11 @@ const createProxy = ({ createRequestOptions, requestStart, createRequestPipe, cr
   }
 
   const proxy = http.createServer((request, response) => {
-    const requestInfo = urlParser(request.url)
-
-    const defaultRequestOptions = {
-      hostname: requestInfo.hostname,
-      port: requestInfo.port,
-      method: request.method,
+    const defaultRequestOptions = Object.assign({
       headers: request.headers,
-      path: request.url
-    }
+      method: request.method,
+      httpVersion: request.httpVersion
+    }, urlParser(request.url))
 
     const id = nextId(request.url)
 
@@ -47,7 +43,7 @@ const createProxy = ({ createRequestOptions, requestStart, createRequestPipe, cr
         response.on('finish', () => responseDone({ id, headers, statusCode: proxyResponse.statusCode, statusMessage: proxyResponse.statusMessage, body: Buffer.concat(responseData) }))
       })
 
-    const { hostname, method, headers, port, path: url } = requestOptions
+    const { hostname, method, headers, port, href: url } = requestOptions
 
     const requestData = { id, hostname, method, headers, port, url }
     requestStart(requestData)
