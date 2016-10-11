@@ -16,7 +16,8 @@
 
 .sidebar-container {
   background-color: #777;
-  width: 100px;
+  padding: 64px 0px;
+  width: 60px;
 }
 
 .request-pane {
