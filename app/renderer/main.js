@@ -6,6 +6,8 @@ const configureStore = require('./store/configureStore')
 const createProxy = require('../lib/proxy')
 const injectTapEventPlugin = require('react-tap-event-plugin')
 const MuiThemeProvider = require('material-ui/styles/MuiThemeProvider').default
+const darkBaseTheme = require('material-ui/styles/baseThemes/darkBaseTheme').default
+const getMuiTheme = require('material-ui/styles/getMuiTheme').default
 const through = require('through2')
 const { addRequest, addResponse } = require('./actions')
 const openDb = require('./db')
@@ -50,9 +52,14 @@ createProxy(options, (err) => {
   console.log(`Renderer Server started on port ${options.port}...`)
 })
 
+const theme = getMuiTheme(darkBaseTheme)
+console.log(theme)
+theme.toolbar.backgroundColor = theme.palette.canvasColor
+theme.svgIcon.color = theme.palette.primary3Color
+
 render(
   <Provider store={store}>
-    <MuiThemeProvider>
+    <MuiThemeProvider muiTheme={theme}>
       <App />
     </MuiThemeProvider>
   </Provider>, document.getElementById('mount')

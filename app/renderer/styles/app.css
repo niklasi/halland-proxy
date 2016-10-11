@@ -12,17 +12,6 @@
 
 .main-container {
   flex: 1;
-}
-
-.sidebar-container {
-  background-color: #777;
-  padding: 64px 0px;
-  width: 60px;
-}
-
-.request-pane {
-  border: 1px black solid;
-  min-height: 50px;
-  margin: 5px;
+  margin-left: 60px;
 }
 

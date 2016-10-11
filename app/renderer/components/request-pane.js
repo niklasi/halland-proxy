@@ -16,25 +16,22 @@ module.exports = ({ request, response = { headers: [] } }) => {
 
   const headerMapper = (header, index) => <li key={`${header.key}-${index}`}>{`${header.key}: ${header.value}`}</li>
 
-  const toolbarStyle = {
-    backgroundColor: '#FFF'
-  }
-
-  return <Card>
-          <Toolbar style={toolbarStyle}>
+  return <Card >
+          <Toolbar>
             <ToolbarGroup firstChild>
               <CardHeader
+                style={{maxWidth: '300px'}}
                 avatar={<Avatar>{response.statusCode}</Avatar>}
                 title={request.host}
                 subtitle={`${request.method} ${request.path} HTTP/${request.httpVersion}`}
               />
             </ToolbarGroup>
             <ToolbarGroup lastChild>
-            <IconButton><ReplayIcon /></IconButton>
-            <IconButton><CodeIcon /></IconButton>
+              <IconButton tooltip='Replay request'><ReplayIcon /></IconButton>
+              <IconButton tooltip='View'><CodeIcon /></IconButton>
             </ToolbarGroup>
            </Toolbar>
-           <CardText>
+           <CardText style={{maxWidth: '300px'}}>
               <h3>Request headers</h3>
               <ul>
                 {transformHeaders(request.headers).map(headerMapper)}
