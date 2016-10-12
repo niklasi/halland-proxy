@@ -10,8 +10,15 @@
   height: 100%;
 }
 
-.main-container {
+header {
+  width: 100%;
+  position: fixed;
+  z-index: 500;
+}
+
+main {
   flex: 1;
-  margin-left: 76px;
+  margin-left: 75px;
+  margin-top: 32px;
 }
 

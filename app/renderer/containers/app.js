@@ -25,18 +25,19 @@ const appBarIconStyle = {
 /* eslint-disable react/jsx-indent */
 const App = ({ requests }) => <div className='app-container'>
                               <SidebarContainer />
-                              <main className='main-container'>
-                                <AppBar showMenuIconButton={false}
-                                  titleStyle={titleStyle}
-                                  title='Requests'
-                                  iconElementRight={
+                              <header>
+                                  <AppBar showMenuIconButton={false}
+                                    titleStyle={titleStyle}
+                                    title='Requests'
+                                    iconElementRight={
                                     <IconButton style={buttonStyle}>
                                       <SearchIcon />
                                     </IconButton>
                                   }
-                                  iconStyleRight={appBarIconStyle}
-                                  />
-                                <RequestsContainer requests={requests} />
+                                    iconStyleRight={appBarIconStyle} />
+                              </header>
+                              <main>
+                                  <RequestsContainer requests={requests} />
                               </main>
                             </div>
 
