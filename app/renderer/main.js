@@ -11,7 +11,7 @@ const getMuiTheme = require('material-ui/styles/getMuiTheme').default
 const through = require('through2')
 const { addRequest, addResponse } = require('./actions')
 const openDb = require('./db')
-const config = require('./config')()
+const config = require('./config').load()
 const loadPlugins = require('./plugins')
 
 injectTapEventPlugin()
