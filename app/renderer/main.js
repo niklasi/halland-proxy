@@ -54,13 +54,14 @@ createProxy(options, (err) => {
 
 const theme = getMuiTheme(darkBaseTheme)
 console.log(theme)
+theme.appBar.height = 32
 theme.toolbar.backgroundColor = theme.palette.canvasColor
 theme.svgIcon.color = theme.palette.primary3Color
 
 render(
   <Provider store={store}>
     <MuiThemeProvider muiTheme={theme}>
-      <App />
+      <App backgroundColor={theme.palette.canvasColor} />
     </MuiThemeProvider>
   </Provider>, document.getElementById('mount')
 )

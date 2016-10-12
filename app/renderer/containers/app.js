@@ -7,8 +7,21 @@ const IconButton = require('material-ui/IconButton').default
 const SearchIcon = require('material-ui/svg-icons/action/search').default
 
 const titleStyle = {
-  textAlign: 'center'
+  textAlign: 'center',
+  WebkitAppRegion: 'drag',
+  fontSize: '14px'
 }
+
+const buttonStyle = {
+  padding: '0px',
+  height: '32px',
+  width: '32px'
+}
+
+const appBarIconStyle = {
+  marginTop: '0px'
+}
+
 /* eslint-disable react/jsx-indent */
 const App = ({ requests }) => <div className='app-container'>
                               <SidebarContainer />
@@ -16,7 +29,12 @@ const App = ({ requests }) => <div className='app-container'>
                                 <AppBar showMenuIconButton={false}
                                   titleStyle={titleStyle}
                                   title='Requests'
-                                  iconElementRight={<IconButton><SearchIcon /></IconButton>}
+                                  iconElementRight={
+                                    <IconButton style={buttonStyle}>
+                                      <SearchIcon />
+                                    </IconButton>
+                                  }
+                                  iconStyleRight={appBarIconStyle}
                                   />
                                 <RequestsContainer requests={requests} />
                               </main>

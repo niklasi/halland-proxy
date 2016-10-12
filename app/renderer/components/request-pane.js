@@ -20,7 +20,6 @@ module.exports = ({ request, response = { headers: [] } }) => {
           <Toolbar>
             <ToolbarGroup firstChild>
               <CardHeader
-                style={{maxWidth: '300px'}}
                 avatar={<Avatar>{response.statusCode}</Avatar>}
                 title={request.host}
                 subtitle={`${request.method} ${request.path} HTTP/${request.httpVersion}`}
@@ -31,7 +30,7 @@ module.exports = ({ request, response = { headers: [] } }) => {
               <IconButton tooltip='View'><CodeIcon /></IconButton>
             </ToolbarGroup>
            </Toolbar>
-           <CardText style={{maxWidth: '300px'}}>
+           <CardText>
               <h3>Request headers</h3>
               <ul>
                 {transformHeaders(request.headers).map(headerMapper)}
