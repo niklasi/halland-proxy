@@ -5,10 +5,8 @@ const requests = (state = [], action) => {
     case 'ADD_REQUEST':
       const id = action.payload.id
       const request = action.payload
-      const index = state.findIndex(item => item.id === request.id)
-      if (index === -1) return state.concat([{ id, request }])
+      return state.concat([{ id, request }])
 
-      return [].concat(state.slice(0, index)).concat([{ id, request }]).concat(state.slice(index + 1))
     case 'ADD_RESPONSE':
       const responseIndex = state.findIndex(item => item.id === action.payload.id)
       if (responseIndex === -1) return state.concat([{ id: action.payload.id, response: action.payload }])
