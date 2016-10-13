@@ -12,6 +12,6 @@ RequestContainer.propTypes = {
   requests: React.PropTypes.array.isRequired
 }
 
-const mapStateToProps = ({ requests }) => ({ requests })
+const mapStateToProps = ({ requests, responses }) => ({ requests, responses })
 
 module.exports = connect(mapStateToProps)(RequestContainer)

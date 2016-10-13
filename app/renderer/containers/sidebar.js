@@ -2,7 +2,7 @@ const React = require('react')
 const SettingsIcon = require('material-ui/svg-icons/action/settings').default
 const Drawer = require('material-ui/Drawer').default
 const IconButton = require('material-ui/IconButton').default
-const config = require('../config.js')
+const config = require('../../lib/config')
 
 const drawerStyle = {
   overflow: 'none',
