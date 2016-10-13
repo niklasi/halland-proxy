@@ -13,11 +13,13 @@ const { addRequest, addResponse } = require('./actions')
 const openDb = require('./db')
 const config = require('./config').load()
 const loadPlugins = require('./plugins')
+const perf = require('react-addons-perf')
 
 injectTapEventPlugin()
 
 require('./components/title')()
 
+Object.defineProperty(window, 'perf', { get: () => perf })
 const db = openDb({path: config.db.path, backingStore: config.db.backingStore})
 const store = configureStore()
 const plugins = loadPlugins(config)
