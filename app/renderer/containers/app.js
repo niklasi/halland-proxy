@@ -1,5 +1,4 @@
 const React = require('react')
-const { connect } = require('react-redux')
 const RequestsContainer = require('./requests')
 const SidebarContainer = require('./sidebar')
 const AppBar = require('material-ui/AppBar').default
@@ -37,15 +36,7 @@ const App = ({ requests }) => <div className='app-container'>
                                     iconStyleRight={appBarIconStyle} />
                               </header>
                               <main>
-                                  <RequestsContainer requests={requests} />
+                                  <RequestsContainer />
                               </main>
                             </div>
-
-App.propTypes = {
-  requests: React.PropTypes.array.isRequired
-}
-
-const mapStateToProps = ({ requests }) => ({ requests })
-
-module.exports = connect(mapStateToProps)(App)
-/* eslint-enable react/jsx-indent */
+module.exports = App
