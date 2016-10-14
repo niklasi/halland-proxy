@@ -23,7 +23,6 @@ app.on('ready', function () {
 
   globalShortcut.register('f12', function () {
     win.toggleDevTools()
-    proxy.toggleDevTools()
   })
 
   win.on('closed', function () {
