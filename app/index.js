@@ -18,7 +18,7 @@ app.on('ready', function () {
   proxy.loadURL('file://' + resolve(__dirname, 'proxy.html'))
 
   proxy.on('ready-to-show', () => {
-    proxy.webContents.send('gui-window', win.id)
+    proxy.webContents.send('start-proxy', win.id)
   })
 
   globalShortcut.register('f12', function () {
