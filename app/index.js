@@ -27,6 +27,15 @@ app.on('ready', () => {
 
   win.on('closed', () => {
     win = null
+    console.log('Gui window closed...')
+  })
+
+  win.webContents.on('crashed', (evt, killed) => {
+    console.log('Gui window crashed...')
+  })
+
+  proxy.webContents.on('crashed', (evt, killed) => {
+    console.log('Proxy window crashed...')
   })
 
   proxy.on('closed', () => {
