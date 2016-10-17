@@ -30,9 +30,7 @@
     "request": "^2.75.0",
     "standard": "^8.0.0",
     "tap": "^7.1.2",
-    "through2": "^2.0.1",
-    "devtron": "^1.4.0",
-    "react-addons-perf": "^15.3.2"
+    "through2": "^2.0.1"
   },
   "dependencies": {},
   "build": {

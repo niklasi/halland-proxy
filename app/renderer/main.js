@@ -10,7 +10,8 @@ const getMuiTheme = require('material-ui/styles/getMuiTheme').default
 const { addRequest, addResponse } = require('./actions')
 const perf = require('react-addons-perf')
 const ipc = require('electron').ipcRenderer
-
+const { Router, IndexRoute, Route, createMemoryHistory } = require('react-router')
+const RequestsContainer = require('./components/requests')
 injectTapEventPlugin()
 
 require('./components/title')()
@@ -32,10 +33,15 @@ theme.appBar.height = 32
 theme.toolbar.backgroundColor = theme.palette.canvasColor
 theme.svgIcon.color = theme.palette.primary3Color
 
+const history = createMemoryHistory('/')
 render(
   <Provider store={store}>
     <MuiThemeProvider muiTheme={theme}>
-      <App backgroundColor={theme.palette.canvasColor} />
+      <Router history={history}>
+        <Route path='/' component={App}>
+          <IndexRoute component={RequestsContainer} />
+        </Route>
+      </Router>
     </MuiThemeProvider>
   </Provider>, document.getElementById('mount')
 )
