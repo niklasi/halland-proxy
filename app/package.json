@@ -38,9 +38,5 @@
     "redux-logger": "^2.4.0",
     "redux-thunk": "^1.0.3",
     "through2": "^2.0.1"
-  },
-  "devDependencies": {
-    "devtron": "^1.4.0",
-    "react-addons-perf": "^15.3.2"
   }
 }
