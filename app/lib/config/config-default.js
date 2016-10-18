@@ -4,5 +4,6 @@ module.exports = {
   db: {
     path: '/tmp/halland-proxy',
     backingStore: 'memory'
-  }
+  },
+  plugins: []
 }
