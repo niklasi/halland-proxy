@@ -3,6 +3,7 @@ const { ToolbarGroup } = require('material-ui/Toolbar')
 const IconButton = require('material-ui/IconButton').default
 const CodeIcon = require('material-ui/svg-icons/action/code').default
 const ReplayIcon = require('material-ui/svg-icons/av/replay').default
+const { Link } = require('react-router')
 
 /* eslint-disable react/jsx-indent */
 class RequestPaneToolbar extends React.Component {
@@ -14,7 +15,7 @@ class RequestPaneToolbar extends React.Component {
   render () {
     return <ToolbarGroup lastChild>
         <IconButton><ReplayIcon /></IconButton>
-        <IconButton><CodeIcon /></IconButton>
+        <Link to='/requests/123'><IconButton><CodeIcon /></IconButton></Link>
       </ToolbarGroup>
   }
 }

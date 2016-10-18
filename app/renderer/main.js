@@ -12,6 +12,7 @@ const perf = require('react-addons-perf')
 const ipc = require('electron').ipcRenderer
 const { Router, IndexRoute, Route, createMemoryHistory } = require('react-router')
 const RequestsContainer = require('./components/requests')
+const RequestDetailsContainer = require('./components/request-details')
 injectTapEventPlugin()
 
 require('./components/title')()
@@ -33,13 +34,16 @@ theme.appBar.height = 32
 theme.toolbar.backgroundColor = theme.palette.canvasColor
 theme.svgIcon.color = theme.palette.primary3Color
 
-const history = createMemoryHistory('/')
+const history = createMemoryHistory('/requests')
 render(
   <Provider store={store}>
     <MuiThemeProvider muiTheme={theme}>
       <Router history={history}>
         <Route path='/' component={App}>
-          <IndexRoute component={RequestsContainer} />
+          <Route path='requests'>
+            <IndexRoute component={RequestsContainer} label='Requests' />
+            <Route path=':id' component={RequestDetailsContainer} label='Details' />
+          </Route>
         </Route>
       </Router>
     </MuiThemeProvider>
