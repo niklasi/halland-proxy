@@ -46,10 +46,8 @@ ipc.on('start-proxy', (evt, windowId) => {
 })
 
 ipc.on('send-request-details', (e, requestId) => {
-  const rs = db.createValueStream({gte: `${requestId}!response!body!!`, lt: `${requestId}!response!body!~`})
-  let responseData = []
-  rs.on('data', (value) => (responseData = responseData.concat(value.data)))
-  rs.on('end', () => {
-    win.webContents.send('request-details', responseData)
+  db.get(`${requestId}!response!meta`, (err, response) => {
+    if (err) console.log(err)
+    win.webContents.send('request-details', response)
   })
 })
