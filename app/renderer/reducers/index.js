@@ -1,6 +1,6 @@
 const { combineReducers } = require('redux')
 
-const requests = (state = [], action) => {
+function requests (state = [], action) {
   switch (action.type) {
     case 'ADD_REQUEST':
       const id = action.payload.id
@@ -18,4 +18,13 @@ const requests = (state = [], action) => {
   }
 }
 
-module.exports = combineReducers({requests})
+function requestDetails (state = {}, action) {
+  switch (action.type) {
+    case 'GET_REQUEST_DETAILS_SUCCESS':
+      return action.payload
+    default:
+      return state
+  }
+}
+
+module.exports = combineReducers({requests, requestDetails})

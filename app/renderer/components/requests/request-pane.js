@@ -16,7 +16,7 @@ module.exports = ({ request, response = { headers: [] } }) => {
                 subtitle={`${request.method} ${request.path} HTTP/${request.httpVersion}`}
               />
             </ToolbarGroup>
-            <RequestPaneToolbar />
+            <RequestPaneToolbar requestId={request.id} />
            </Toolbar>
            <CardText>
               <Headers title='Request headers' headers={request.headers} />

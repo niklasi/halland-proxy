@@ -8,9 +8,10 @@ const ipc = require('electron').ipcRenderer
 
 const db = openDb({path: config.db.path, backingStore: config.db.backingStore})
 
+let win
 ipc.on('start-proxy', (evt, windowId) => {
   const plugins = loadPlugins(config)
-  const win = BrowserWindow.fromId(windowId)
+  win = BrowserWindow.fromId(windowId)
 
   const options = {
     port: config.port,
@@ -41,5 +42,14 @@ ipc.on('start-proxy', (evt, windowId) => {
   createProxy(options, (err) => {
     if (err) throw err
     console.log(`Server started on port ${options.port}...`)
+  })
+})
+
+ipc.on('send-request-details', (e, requestId) => {
+  const rs = db.createValueStream({gte: `${requestId}!response!body!!`, lt: `${requestId}!response!body!~`})
+  let responseData = []
+  rs.on('data', (value) => (responseData = responseData.concat(value.data)))
+  rs.on('end', () => {
+    win.webContents.send('request-details', responseData)
   })
 })

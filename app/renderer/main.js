@@ -13,6 +13,7 @@ const ipc = require('electron').ipcRenderer
 const { Router, IndexRoute, Route, createMemoryHistory } = require('react-router')
 const RequestsContainer = require('./components/requests')
 const RequestDetailsContainer = require('./components/request-details')
+
 injectTapEventPlugin()
 
 require('./components/title')()

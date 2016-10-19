@@ -1,4 +1,4 @@
-const { app, BrowserWindow, globalShortcut } = require('electron')
+const { app, BrowserWindow, globalShortcut, ipcMain } = require('electron')
 const { resolve } = require('path')
 
 let win = null
@@ -23,6 +23,10 @@ app.on('ready', () => {
 
   globalShortcut.register('f12', () => {
     win.toggleDevTools()
+  })
+
+  ipcMain.on('get-request-details', (e, requestId) => {
+    proxy.webContents.send('send-request-details', requestId)
   })
 
   win.on('closed', () => {

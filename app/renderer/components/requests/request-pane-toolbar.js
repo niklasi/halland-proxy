@@ -15,7 +15,7 @@ class RequestPaneToolbar extends React.Component {
   render () {
     return <ToolbarGroup lastChild>
         <IconButton><ReplayIcon /></IconButton>
-        <Link to='/requests/123'><IconButton><CodeIcon /></IconButton></Link>
+        <Link to={`/requests/${this.props.requestId}`}><IconButton><CodeIcon /></IconButton></Link>
       </ToolbarGroup>
   }
 }
