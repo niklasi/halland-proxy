@@ -15,7 +15,7 @@ const createProxy = ({ createRequestOptions, requestStart, createRequestPipe, cr
   const nextId = (url) => {
     let counter = requestCounter.get(url) || 0
     requestCounter.set(url, ++counter)
-    return `${url}-${counter}`.replace(/\.|:|\//g, '-')
+    return `${url}-${counter}`.replace(/\.|\?|:|\//g, '-')
   }
 
   const proxy = http.createServer((request, response) => {
