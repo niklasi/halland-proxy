@@ -1,6 +1,6 @@
 const React = require('react')
 const {Card, CardHeader, CardText} = require('material-ui/Card')
-const ResponseTabs = require('./request-details-tab')
+const ResponseTabs = require('./response-details-tabs')
 
 /* eslint-disable react/jsx-indent */
 module.exports = (props) => {

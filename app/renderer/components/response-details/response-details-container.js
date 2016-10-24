@@ -1,20 +1,20 @@
 const React = require('react')
 const { connect } = require('react-redux')
 const { getRequestDetails } = require('../../actions')
-const RequestDetails = require('./request-details')
+const ResponseDetails = require('./response-details')
 
-class RequestDetailsContainer extends React.Component {
+class ResponseDetailsContainer extends React.Component {
 
   componentDidMount () {
     this.props.getRequestDetails(this.props.params.id)
   }
 
   render () {
-    return <RequestDetails response={this.props.response} />
+    return <ResponseDetails response={this.props.response} />
   }
 }
 
-RequestDetailsContainer.propTypes = {
+ResponseDetailsContainer.propTypes = {
   response: React.PropTypes.object.isRequired,
   params: React.PropTypes.object.isRequired
 }
@@ -23,4 +23,4 @@ const mapStateToProps = (state, ownProps) => {
   return { response: state.requestDetails, params: ownProps.params }
 }
 
-module.exports = connect(mapStateToProps, { getRequestDetails })(RequestDetailsContainer)
+module.exports = connect(mapStateToProps, { getRequestDetails })(ResponseDetailsContainer)
