@@ -1,19 +1,20 @@
+const React = require('react')
 const Headers = require('../requests/headers')
 const Highlight = require('react-highlight')
 const zlib = require('zlib')
 const hexer = require('hexer')
-const { Tab } = require('material-ui/Tabs')
+const { Tabs, Tab } = require('material-ui/Tabs')
 
 const decompressor = (response) => {
   if (!response.headers) return null
   const body = Buffer.from(response.body.data)
   switch (response.headers['content-encoding']) {
     case 'gzip':
-      return zlib.gunzipSync(body).toString()
+      return zlib.gunzipSync(body)
     case 'deflate':
-      return zlib.deflateSync(body).toString()
+      return zlib.deflateSync(body)
     default:
-      return body.toString()
+      return body
   }
 }
 
@@ -36,6 +37,12 @@ const isText = (response) => {
   return contentType.split('/')[0] === 'text' || contentType.split(';')[0] === 'application/json'
 }
 
+const isImage = (response) => {
+  const contentType = response.headers ? response.headers['content-type'] : ''
+
+  return contentType.split('/')[0] === 'image'
+}
+
 const isHtml = (response) => {
   const contentType = response.headers ? response.headers['content-type'] : ''
 
@@ -48,58 +55,72 @@ const isJson = (response) => {
   return contentType.split(';')[0] === 'application/json'
 }
 
+const tabItemContainerStyle = {
+  backgroundColor: 'transparent'
+}
+
+const contentContainerStyle = {
+  minHeight: '200px'
+}
+
 const tabStyle = {
   color: '#FFF'
 }
 
-module.exports = (response) => {
+/* eslint-disable react/jsx-indent */
+module.exports = ({ response }) => {
   const body = decompressor(response)
 
-  const tabs = []
-
-  tabs.push(
+  return <Tabs contentContainerStyle={contentContainerStyle} tabItemContainerStyle={tabItemContainerStyle}>
     <Tab key='tab-response-headers' style={tabStyle} label='Headers'>
       {response.headers ? <Headers title='Response headers' headers={response.headers} /> : null}
     </Tab>
-  )
-
-  if (isText(response)) {
-    tabs.push(
-      <Tab key='tab-response-text' style={tabStyle} label='Text'>
-        <Highlight className='text'>{body}</Highlight>
-      </Tab>
-    )
-  }
-
-  tabs.push(
+    {
+      isText(response)
+        ? <Tab key='tab-response-text' style={tabStyle} label='Text'>
+            <Highlight className='text'>{body.toString()}</Highlight>
+          </Tab>
+        : null
+    }
     <Tab key='tab-response-hex' style={tabStyle} label='Hex'>
-      {response.body ? <Highlight className='no-highlight'>{hexer(Buffer.from(body))}</Highlight> : null}
+      {response.body ? <Highlight className='no-highlight'>{hexer(Buffer.from(body), {group: 1})}</Highlight> : null}
     </Tab>
-  )
-
-  if (isCompressed(response)) {
-    tabs.push(
-      <Tab key='tab-response-compressed' style={tabStyle} label='Compressed'>
-        {response.body ? <Highlight className='no-highlight'>{hexer(Buffer.from(response.body.data))}</Highlight> : null}
-      </Tab>
-    )
-  }
-
-  if (isHtml(response)) {
-    tabs.push(
-      <Tab key='tab-response-html' style={tabStyle} label='Html'>
-        <Highlight className='html'>{body}</Highlight>
-      </Tab>
-    )
-  }
-
-  if (isJson(response)) {
-    tabs.push(
-      <Tab key='tab-response-json' style={tabStyle} label='Json'>
-        <Highlight className='json'>{JSON.stringify(JSON.parse(body), null, ' ')}</Highlight>
-      </Tab>
-    )
-  }
-
-  return tabs
+    {
+      isCompressed(response)
+      ? <Tab key='tab-response-compressed' style={tabStyle} label='Compressed'>
+          {response.body ? <Highlight className='no-highlight'>{hexer(Buffer.from(response.body.data), {group: 1})}</Highlight> : null}
+        </Tab>
+      : null
+    }
+    {
+      isHtml(response)
+      ? <Tab key='tab-response-html' style={tabStyle} label='Html'>
+          <Highlight className='html'>{body.toString()}</Highlight>
+        </Tab>
+      : null
+    }
+    {
+      isJson(response)
+      ? <Tab key='tab-response-json' style={tabStyle} label='Json'>
+          <Highlight className='json'>{JSON.stringify(JSON.parse(body.toString()), null, ' ')}</Highlight>
+        </Tab>
+      : null
+    }
+    {
+      isImage(response)
+      ? <Tab key='tab-response-image' style={tabStyle} label='Image'>
+          {console.log('buffer', Buffer.from(body))}
+          <span><img src={`data:${response.headers['content-type'].split(';')[0]};base64,${Buffer.from(body).toString('base64')}`} /></span>
+        </Tab>
+      : null
+    }
+    {
+      response.headers
+      ? <Tab key='tab-response-raw' style={tabStyle} label='Raw'>
+          <Highlight className='http'>{`HTTP/1.1 ${response.statusCode} ${response.statusMessage}\n${Object.keys(response.headers).map(h => `${h}: ${response.headers[h]}`).join('\n')}\n\n${body.toString(isText(response) ? 'utf-8' : 'binary')}`}</Highlight>
+        </Tab>
+      : null
+    }
+  </Tabs>
 }
+/* eslint-enable react/jsx-indent */
