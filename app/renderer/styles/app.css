@@ -7,16 +7,12 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
-html, body, #mount, .app-container {
-    margin: 0;
-    height: 100%;
-    width: 100%;
-    display: flex;
-  }
+html, body {
+  margin: 0;
+}
 
 .app-container {
   display: flex;
-  height: 100%;
 }
 
 header {
@@ -29,5 +25,10 @@ main {
   flex: 1;
   margin-left: 75px;
   margin-top: 32px;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
