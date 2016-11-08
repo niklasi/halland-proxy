@@ -32,6 +32,7 @@ const createProxy = ({ createRequestOptions, requestStart, createRequestPipe, cr
     const proxyRequest = http.request(requestOptions)
       .on('response', (proxyResponse) => {
         const headers = createResponseHeaders(proxyResponse.headers)
+        response.statusCode = proxyResponse.statusCode
 
         transformHeaders(headers).forEach(header => response.setHeader(header.key, header.value))
 
