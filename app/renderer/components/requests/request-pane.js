@@ -3,10 +3,19 @@ const {Card, CardHeader, CardText} = require('material-ui/Card')
 const Avatar = require('material-ui/Avatar').default
 const {Toolbar, ToolbarGroup} = require('material-ui/Toolbar')
 const RequestPaneToolbar = require('./request-pane-toolbar')
+const PureRenderMixin = require('react-addons-pure-render-mixin')
 
 /* eslint-disable react/jsx-indent */
-module.exports = ({ request, response = { headers: [] } }) => {
-  return <Card >
+class RequestPane extends React.Component {
+
+  constructor (props) {
+    super(props)
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
+  }
+
+  render () {
+    const { request, response } = this.props
+    return <Card>
           <Toolbar>
             <ToolbarGroup firstChild>
               <CardHeader
@@ -19,5 +28,8 @@ module.exports = ({ request, response = { headers: [] } }) => {
            </Toolbar>
            <CardText />
          </Card>
+  }
 }
+
+module.exports = RequestPane
 /* eslint-enable react/jsx-indent */
