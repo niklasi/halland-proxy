@@ -46,8 +46,11 @@ ipc.on('start-proxy', (evt, windowId) => {
 })
 
 ipc.on('send-request-details', (e, requestId) => {
-  db.get(`${requestId}!response!meta`, (err, response) => {
+  db.get(`${requestId}!request!meta`, (err, request) => {
     if (err) console.log(err)
-    win.webContents.send('request-details', response)
+    db.get(`${requestId}!response!meta`, (err, response) => {
+      if (err) console.log(err)
+      win.webContents.send('request-details', { request, response })
+    })
   })
 })

@@ -15,8 +15,8 @@ function getRequestDetailsSuccess (data) {
 function getRequestDetails (requestId) {
   return (dispatch) => {
     ipc.send('get-request-details', requestId)
-    ipc.on('request-details', (e, response) => {
-      dispatch(getRequestDetailsSuccess(response))
+    ipc.on('request-details', (e, details) => {
+      dispatch(getRequestDetailsSuccess(details))
     })
   }
 }

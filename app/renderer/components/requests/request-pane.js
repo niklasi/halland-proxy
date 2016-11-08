@@ -2,7 +2,6 @@ const React = require('react')
 const {Card, CardHeader, CardText} = require('material-ui/Card')
 const Avatar = require('material-ui/Avatar').default
 const {Toolbar, ToolbarGroup} = require('material-ui/Toolbar')
-const Headers = require('./headers')
 const RequestPaneToolbar = require('./request-pane-toolbar')
 
 /* eslint-disable react/jsx-indent */
@@ -18,10 +17,7 @@ module.exports = ({ request, response = { headers: [] } }) => {
             </ToolbarGroup>
             <RequestPaneToolbar requestId={request.id} />
            </Toolbar>
-           <CardText>
-              <Headers title='Request headers' headers={request.headers} />
-              <Headers title='Response headers' headers={response.headers} />
-           </CardText>
+           <CardText />
          </Card>
 }
 /* eslint-enable react/jsx-indent */

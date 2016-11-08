@@ -6,7 +6,9 @@ const hexer = require('hexer')
 const { Tabs, Tab } = require('material-ui/Tabs')
 
 const decompressor = (response) => {
-  if (!response.headers) return null
+  if (!response.headers) return Buffer.alloc(0)
+  if (!response.body) return Buffer.alloc(0)
+
   const body = Buffer.from(response.body.data)
   switch (response.headers['content-encoding']) {
     case 'gzip':
@@ -32,25 +34,25 @@ const isCompressed = (response) => {
 }
 
 const isText = (response) => {
-  const contentType = response.headers ? response.headers['content-type'] : ''
+  const contentType = (response.headers ? response.headers['content-type'] : '') || ''
 
   return contentType.split('/')[0] === 'text' || contentType.split(';')[0] === 'application/json'
 }
 
 const isImage = (response) => {
-  const contentType = response.headers ? response.headers['content-type'] : ''
+  const contentType = (response.headers ? response.headers['content-type'] : '') || ''
 
   return contentType.split('/')[0] === 'image'
 }
 
 const isHtml = (response) => {
-  const contentType = response.headers ? response.headers['content-type'] : ''
+  const contentType = (response.headers ? response.headers['content-type'] : '') || ''
 
   return contentType.split(';')[0] === 'text/html'
 }
 
 const isJson = (response) => {
-  const contentType = response.headers ? response.headers['content-type'] : ''
+  const contentType = (response.headers ? response.headers['content-type'] : '') || ''
 
   return contentType.split(';')[0] === 'application/json'
 }

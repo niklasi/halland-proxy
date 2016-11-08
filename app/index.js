@@ -25,6 +25,10 @@ app.on('ready', () => {
     win.toggleDevTools()
   })
 
+  globalShortcut.register('f11', () => {
+    proxy.toggleDevTools()
+  })
+
   ipcMain.on('get-request-details', (e, requestId) => {
     proxy.webContents.send('send-request-details', requestId)
   })

@@ -7,11 +7,4 @@ const transformHeaders = (headers) => {
 
 const headerMapper = (header, index) => <li key={`${header.key}-${index}`}>{`${header.key}: ${header.value}`}</li>
 
-/* eslint-disable react/jsx-indent */
-module.exports = ({ title, headers }) => <div>
-                                        <h3>{title}</h3>
-                                        <ul>
-                                          {transformHeaders(headers).map(headerMapper)}
-                                        </ul>
-                                      </div>
-/* eslint-enable react/jsx-indent */
+module.exports = ({ headers }) => <ul>{transformHeaders(headers).map(headerMapper)}</ul>

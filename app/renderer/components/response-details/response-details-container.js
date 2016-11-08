@@ -10,17 +10,21 @@ class ResponseDetailsContainer extends React.Component {
   }
 
   render () {
-    return <ResponseDetails response={this.props.response} />
+    return <ResponseDetails request={this.props.request} response={this.props.response} />
   }
 }
 
 ResponseDetailsContainer.propTypes = {
-  response: React.PropTypes.object.isRequired,
+  request: React.PropTypes.object,
+  response: React.PropTypes.object,
   params: React.PropTypes.object.isRequired
 }
 
-const mapStateToProps = (state, ownProps) => {
-  return { response: state.requestDetails, params: ownProps.params }
+const mapStateToProps = (state) => {
+  return {
+    request: state.requestDetails.request,
+    response: state.requestDetails.response
+  }
 }
 
 module.exports = connect(mapStateToProps, { getRequestDetails })(ResponseDetailsContainer)
