@@ -1,12 +1,34 @@
 const React = require('react')
 const RequestPane = require('./request-pane')
 const { connect } = require('react-redux')
+const { List, AutoSizer } = require('react-virtualized')
 
+/* eslint-disable react/jsx-indent */
 const RequestContainer = ({ requests }) => {
-  const mapper = (req, index) => <RequestPane key={index} request={req.request} response={req.response} />
+  function rowRenderer ({
+    key,         // Unique key within array of rows
+    index,       // Index of row within collection
+    isScrolling, // The List is currently being scrolled
+    isVisible,   // This row is visible within the List (eg it is not an overscanned row)
+    style        // Style object to be applied to row (to position it)
+  }) {
+    return (
+      <div key={key} style={style}>
+        <RequestPane key={index} request={requests[index].request} response={requests[index].response} />
+      </div>
+    )
+  }
 
-  return <div className='requests-container'>{requests.map(mapper)}</div>
+  return <div style={{height: '100%', width: '100%'}}>
+            <AutoSizer>
+              {({ height, width }) => (
+                <List rowCount={requests.length} width={width} height={height} rowHeight={() => 97} rowRenderer={rowRenderer} />
+              )}
+            </AutoSizer>
+         </div>
+  // return <div className='requests-container'>{requests.map(mapper)}</div>
 }
+/* eslint-enable react/jsx-indent */
 
 RequestContainer.propTypes = {
   requests: React.PropTypes.array.isRequired

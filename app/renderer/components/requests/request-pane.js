@@ -14,7 +14,7 @@ class RequestPane extends React.Component {
   }
 
   render () {
-    const { request, response } = this.props
+    const { request, response = {} } = this.props
     return <Card>
           <Toolbar>
             <ToolbarGroup firstChild>
