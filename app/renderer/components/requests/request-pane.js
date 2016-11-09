@@ -22,6 +22,7 @@ class RequestPane extends React.Component {
                 avatar={<Avatar>{response.statusCode}</Avatar>}
                 title={request.host}
                 subtitle={`${request.method} ${request.path} HTTP/${request.httpVersion}`}
+                subtitleStyle={{maxWidth: '700px', whiteSpace: 'pre-wrap', wordWrap: 'break-word'}}
               />
             </ToolbarGroup>
             <RequestPaneToolbar requestId={request.id} />
