@@ -1,1 +1,1 @@
-{ "presets": ["react"] }
+{"presets": ["es2016-node5", "react"]}
