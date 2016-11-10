@@ -1,6 +1,6 @@
 const http = require('http')
 const request = require('request')
-const createProxy = require('../app/lib/proxy')
+const createProxy = require('../../app/lib/proxy')
 const tap = require('tap')
 
 const setup = (options, cb) => {

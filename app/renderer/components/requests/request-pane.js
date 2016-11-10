@@ -16,19 +16,19 @@ class RequestPane extends React.Component {
   render () {
     const { request, response = {} } = this.props
     return <Card>
-          <Toolbar>
-            <ToolbarGroup firstChild>
-              <CardHeader
-                avatar={<Avatar>{response.statusCode}</Avatar>}
-                title={request.host}
-                subtitle={`${request.method} ${request.path} HTTP/${request.httpVersion}`}
-                subtitleStyle={{maxWidth: '700px', whiteSpace: 'pre-wrap', wordWrap: 'break-word'}}
-              />
-            </ToolbarGroup>
-            <RequestPaneToolbar requestId={request.id} />
-           </Toolbar>
-           <CardText />
-         </Card>
+            <Toolbar>
+              <ToolbarGroup firstChild>
+                <CardHeader
+                  avatar={<Avatar>{response.statusCode}</Avatar>}
+                  title={request.host}
+                  subtitle={`${request.method} ${request.path} HTTP/${request.httpVersion}`}
+                  subtitleStyle={{maxWidth: '700px', whiteSpace: 'pre-wrap', wordWrap: 'break-word'}}
+                />
+              </ToolbarGroup>
+              <RequestPaneToolbar requestId={request.id} />
+             </Toolbar>
+             <CardText />
+           </Card>
   }
 }
 
