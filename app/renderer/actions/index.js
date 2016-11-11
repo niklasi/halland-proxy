@@ -1,5 +1,6 @@
 import { ipcRenderer } from 'electron'
 import { ADD_REQUEST, ADD_RESPONSE, GET_REQUEST_DETAILS_SUCCESS } from '../../constants/actionTypes'
+import { GET_REQUEST_DETAILS, REQUEST_DETAILS } from '../../constants/ipcMessages'
 
 export function addRequest (request) {
   return {type: ADD_REQUEST, payload: request}
@@ -15,8 +16,8 @@ export function getRequestDetailsSuccess (data) {
 
 export function getRequestDetails (requestId) {
   return (dispatch) => {
-    ipcRenderer.send('get-request-details', requestId)
-    ipcRenderer.on('request-details', (e, details) => {
+    ipcRenderer.send(GET_REQUEST_DETAILS, requestId)
+    ipcRenderer.on(REQUEST_DETAILS, (e, details) => {
       dispatch(getRequestDetailsSuccess(details))
     })
   }

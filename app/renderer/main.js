@@ -9,21 +9,22 @@ import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import { addRequest, addResponse } from './actions'
 import perf from 'react-addons-perf'
-import { ipcRenderer } from 'electron'
+import { ipcRenderer as ipc } from 'electron'
 import { Router, IndexRoute, Route, createMemoryHistory } from 'react-router'
 import RequestsContainer from './components/requests'
 import RequestDetailsContainer from './components/response-details'
 import title from './components/title'
+import { ADD_REQUEST, ADD_RESPONSE } from '../constants/ipcMessages'
 
 injectTapEventPlugin()
 
 title()
 
-ipcRenderer.on('add-request', (e, request) => {
+ipc.on(ADD_REQUEST, (e, request) => {
   store.dispatch(addRequest(request))
 })
 
-ipcRenderer.on('add-response', (e, response) => {
+ipc.on(ADD_RESPONSE, (e, response) => {
   store.dispatch(addResponse(response))
 })
 

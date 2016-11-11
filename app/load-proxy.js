@@ -4,12 +4,13 @@ import { load as loadConfig } from './lib/config'
 import loadPlugins from './plugins'
 import through from 'through2'
 import { remote, ipcRenderer as ipc } from 'electron'
+import { START_PROXY, ADD_REQUEST, ADD_RESPONSE, REQUEST_DETAILS, SEND_REQUEST_DETAILS } from './constants/ipcMessages'
 
 const config = loadConfig()
 const db = openDb({path: config.db.path, backingStore: config.db.backingStore})
 
 let win
-ipc.on('start-proxy', (evt, windowId) => {
+ipc.on(START_PROXY, (evt, windowId) => {
   const plugins = loadPlugins(config)
   win = remote.BrowserWindow.fromId(windowId)
 
@@ -18,7 +19,7 @@ ipc.on('start-proxy', (evt, windowId) => {
     requestSetup: plugins.requestSetup,
     requestStart: (request) => {
       db.put(`${request.id}!request!meta`, request)
-      win.webContents.send('add-request', request)
+      win.webContents.send(ADD_REQUEST, request)
     },
     requestPipe: plugins.requestPipe,
     responseHeaders: plugins.responseHeaders,
@@ -35,7 +36,7 @@ ipc.on('start-proxy', (evt, windowId) => {
     responseDone: (response) => {
       db.put(`${response.id}!response!meta`, response)
       delete response.body
-      win.webContents.send('add-response', response)
+      win.webContents.send(ADD_RESPONSE, response)
     }
   }
 
@@ -45,12 +46,12 @@ ipc.on('start-proxy', (evt, windowId) => {
   })
 })
 
-ipc.on('send-request-details', (e, requestId) => {
+ipc.on(SEND_REQUEST_DETAILS, (e, requestId) => {
   db.get(`${requestId}!request!meta`, (err, request) => {
     if (err) console.log(err)
     db.get(`${requestId}!response!meta`, (err, response) => {
       if (err) console.log(err)
-      win.webContents.send('request-details', { request, response })
+      win.webContents.send(REQUEST_DETAILS, { request, response })
     })
   })
 })

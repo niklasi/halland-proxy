@@ -1,5 +1,6 @@
 import { app, BrowserWindow, globalShortcut, ipcMain } from 'electron'
 import { resolve } from 'path'
+import { START_PROXY, GET_REQUEST_DETAILS, SEND_REQUEST_DETAILS } from './constants/ipcMessages'
 
 let win = null
 let proxy = null
@@ -18,7 +19,7 @@ app.on('ready', () => {
   proxy.loadURL('file://' + resolve(__dirname, 'proxy.html'))
 
   proxy.on('ready-to-show', () => {
-    proxy.webContents.send('start-proxy', win.id)
+    proxy.webContents.send(START_PROXY, win.id)
   })
 
   globalShortcut.register('f12', () => {
@@ -29,8 +30,8 @@ app.on('ready', () => {
     proxy.toggleDevTools()
   })
 
-  ipcMain.on('get-request-details', (e, requestId) => {
-    proxy.webContents.send('send-request-details', requestId)
+  ipcMain.on(GET_REQUEST_DETAILS, (e, requestId) => {
+    proxy.webContents.send(SEND_REQUEST_DETAILS, requestId)
   })
 
   win.on('closed', () => {
