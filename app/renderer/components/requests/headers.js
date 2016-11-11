@@ -1,3 +1,4 @@
+import React from 'react'
 
 const transformHeaders = (headers) => {
   return Object.keys(headers).map(header => {
