@@ -26,7 +26,6 @@ const RequestContainer = ({ requests }) => {
               )}
             </AutoSizer>
          </div>
-  // return <div className='requests-container'>{requests.map(mapper)}</div>
 }
 /* eslint-enable react/jsx-indent */
 
