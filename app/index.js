@@ -12,7 +12,7 @@ app.on('window-all-closed', () => {
 })
 
 app.on('ready', () => {
-  win = new BrowserWindow({width: 640, height: 800, titleBarStyle: 'hidden-inset'})
+  win = new BrowserWindow({width: 968, height: 800, titleBarStyle: 'hidden-inset'})
   win.loadURL('file://' + resolve(__dirname, 'renderer/index.html'))
 
   proxy = new BrowserWindow({width: 400, height: 400, show: false})
