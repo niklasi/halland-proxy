@@ -3,7 +3,7 @@ import request from 'request'
 import createProxy from '../../app/lib/proxy'
 import tap from 'tap'
 
-export function setup (options, cb) {
+function setup (options, cb) {
   if (typeof options === 'function') {
     cb = options
     options = {}
@@ -28,3 +28,4 @@ export function setup (options, cb) {
   server.listen(0, serverStarted)
 }
 
+export default { setup }
