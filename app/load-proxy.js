@@ -1,17 +1,17 @@
-const createProxy = require('./lib/proxy')
-const openDb = require('./db')
-const config = require('./lib/config').load()
-const loadPlugins = require('./plugins')
-const through = require('through2')
-const BrowserWindow = require('electron').remote.BrowserWindow
-const ipc = require('electron').ipcRenderer
+import createProxy from './lib/proxy'
+import openDb from './db'
+import { load as loadConfig } from './lib/config'
+import loadPlugins from './plugins'
+import through from 'through2'
+import { remote, ipcRenderer as ipc } from 'electron'
 
+const config = loadConfig()
 const db = openDb({path: config.db.path, backingStore: config.db.backingStore})
 
 let win
 ipc.on('start-proxy', (evt, windowId) => {
   const plugins = loadPlugins(config)
-  win = BrowserWindow.fromId(windowId)
+  win = remote.BrowserWindow.fromId(windowId)
 
   const options = {
     port: config.port,

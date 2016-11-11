@@ -1,6 +1,6 @@
-const tap = require('tap')
-const common = require('./common')
-const through = require('through2')
+import tap from 'tap'
+import common from './common'
+import through from 'through2'
 
 const responsePipe = [
   (requestData, headers) => {

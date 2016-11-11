@@ -1,7 +1,7 @@
-const levelup = require('levelup')
-const bytewise = require('bytewise')
+import levelup from 'levelup'
+import bytewise from 'bytewise'
 
-module.exports = ({ path, backingStore = 'memory' }) => {
+export default ({ path, backingStore = 'memory' }) => {
   const options = {
     db: backingStore === 'memory' ? require('memdown') : require('leveldown'),
     keyEncoding: bytewise,

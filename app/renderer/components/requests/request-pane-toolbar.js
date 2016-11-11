@@ -1,9 +1,9 @@
-const React = require('react')
-const { ToolbarGroup } = require('material-ui/Toolbar')
-const IconButton = require('material-ui/IconButton').default
-const CodeIcon = require('material-ui/svg-icons/action/code').default
-const ReplayIcon = require('material-ui/svg-icons/av/replay').default
-const { Link } = require('react-router')
+import React from 'react'
+import { ToolbarGroup } from 'material-ui/Toolbar'
+import IconButton from 'material-ui/IconButton'
+import CodeIcon from 'material-ui/svg-icons/action/code'
+import ReplayIcon from 'material-ui/svg-icons/av/replay'
+import { Link } from 'react-router'
 
 /* eslint-disable react/jsx-indent */
 class RequestPaneToolbar extends React.Component {
@@ -20,4 +20,4 @@ class RequestPaneToolbar extends React.Component {
   }
 }
 /* eslint-enable react/jsx-indent */
-module.exports = RequestPaneToolbar
+export default RequestPaneToolbar

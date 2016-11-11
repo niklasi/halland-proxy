@@ -1,5 +1,5 @@
-const { app, BrowserWindow, globalShortcut, ipcMain } = require('electron')
-const { resolve } = require('path')
+import { app, BrowserWindow, globalShortcut, ipcMain } from 'electron'
+import { resolve } from 'path'
 
 let win = null
 let proxy = null

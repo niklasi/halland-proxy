@@ -1,3 +1,3 @@
-const container = require('./requests-container')
+import container from './requests-container'
 
-module.exports = container
+export default container

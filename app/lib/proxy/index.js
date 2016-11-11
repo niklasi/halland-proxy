@@ -1,7 +1,7 @@
-const http = require('http')
-const { parse: urlParser } = require('url')
-const net = require('net')
-const through = require('through2')
+import http from 'http'
+import { parse as urlParser } from 'url'
+import net from 'net'
+import through from 'through2'
 
 const transformHeaders = (headers) => {
   return Object.keys(headers).map(header => {
@@ -97,7 +97,7 @@ const createResponsePipe = (responsePipe) => {
 
 const noop = () => {}
 
-module.exports = ({ port = 0, requestSetup = [], requestStart = noop, requestPipe = [], responseHeaders = [], responsePipe = [], responseDone = noop }, cb) => {
+const startProxy = ({ port = 0, requestSetup = [], requestStart = noop, requestPipe = [], responseHeaders = [], responsePipe = [], responseDone = noop }, cb) => {
   const options = {
     createRequestOptions: createRequestOptions(requestSetup),
     requestStart,
@@ -113,3 +113,5 @@ module.exports = ({ port = 0, requestSetup = [], requestStart = noop, requestPip
     if (cb) return cb(null, proxy)
   })
 }
+
+export default startProxy

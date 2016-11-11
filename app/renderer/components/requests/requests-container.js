@@ -1,7 +1,7 @@
-const React = require('react')
-const RequestPane = require('./request-pane')
-const { connect } = require('react-redux')
-const { List, AutoSizer } = require('react-virtualized')
+import React from 'react'
+import RequestPane from './request-pane'
+import { connect } from 'react-redux'
+import { List, AutoSizer } from 'react-virtualized'
 
 /* eslint-disable react/jsx-indent */
 const RequestContainer = ({ requests }) => {
@@ -36,4 +36,4 @@ RequestContainer.propTypes = {
 
 const mapStateToProps = ({ requests, responses }) => ({ requests, responses })
 
-module.exports = connect(mapStateToProps)(RequestContainer)
+export default connect(mapStateToProps)(RequestContainer)

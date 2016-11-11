@@ -1,9 +1,9 @@
-const React = require('react')
-const {Card, CardHeader, CardText} = require('material-ui/Card')
-const ResponseTabs = require('./response-details-tabs')
+import React from 'react'
+import {Card, CardHeader, CardText} from 'material-ui/Card'
+import ResponseTabs from './response-details-tabs'
 
 /* eslint-disable react/jsx-indent */
-module.exports = ({ response = {}, request = {} }) => {
+export default ({ response = {}, request = {} }) => {
   return <div>
           <Card>
             <CardHeader title='Request' />

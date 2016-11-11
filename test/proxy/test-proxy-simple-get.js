@@ -1,5 +1,5 @@
-const tap = require('tap')
-const common = require('./common')
+import tap from 'tap'
+import common from './common'
 
 tap.test('proxy simple http GET requests', (test) => {
   test.plan(3)

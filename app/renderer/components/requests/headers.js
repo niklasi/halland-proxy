@@ -7,4 +7,4 @@ const transformHeaders = (headers) => {
 
 const headerMapper = (header, index) => <li key={`${header.key}-${index}`}>{`${header.key}: ${header.value}`}</li>
 
-module.exports = ({ headers }) => <ul>{transformHeaders(headers).map(headerMapper)}</ul>
+export default ({ headers }) => <ul>{transformHeaders(headers).map(headerMapper)}</ul>

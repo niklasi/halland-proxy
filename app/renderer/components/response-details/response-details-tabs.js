@@ -1,9 +1,9 @@
-const React = require('react')
-const Headers = require('../requests/headers')
-const Highlight = require('react-highlight')
-const zlib = require('zlib')
-const hexer = require('hexer')
-const { Tabs, Tab } = require('material-ui/Tabs')
+import React from 'react'
+import Headers from '../requests/headers'
+import Highlight from 'react-highlight'
+import zlib from 'zlib'
+import hexer from 'hexer'
+import { Tabs, Tab } from 'material-ui/Tabs'
 
 const decompressor = (response) => {
   if (!response.headers) return Buffer.alloc(0)
@@ -70,7 +70,7 @@ const tabStyle = {
 }
 
 /* eslint-disable react/jsx-indent */
-module.exports = ({ response }) => {
+export default ({ response }) => {
   const body = decompressor(response)
 
   return <Tabs contentContainerStyle={contentContainerStyle} tabItemContainerStyle={tabItemContainerStyle}>

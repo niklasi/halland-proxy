@@ -1,10 +1,10 @@
-const React = require('react')
-const { withRouter } = require('react-router')
-const Sidebar = require('./sidebar')
-const AppBar = require('material-ui/AppBar').default
-const IconButton = require('material-ui/IconButton').default
-const SearchIcon = require('material-ui/svg-icons/action/search').default
-const BackIcon = require('material-ui/svg-icons/navigation/chevron-left').default
+import React from 'react'
+import { withRouter } from 'react-router'
+import Sidebar from './sidebar'
+import AppBar from 'material-ui/AppBar'
+import IconButton from 'material-ui/IconButton'
+import SearchIcon from 'material-ui/svg-icons/action/search'
+import BackIcon from 'material-ui/svg-icons/navigation/chevron-left'
 
 const titleStyle = {
   textAlign: 'center',
@@ -56,4 +56,4 @@ const App = (props) => {
                             </div>
 }
 
-module.exports = withRouter(App)
+export default withRouter(App)

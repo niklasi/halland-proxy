@@ -1,9 +1,9 @@
-const React = require('react')
-const {Card, CardHeader, CardText} = require('material-ui/Card')
-const Avatar = require('material-ui/Avatar').default
-const {Toolbar, ToolbarGroup} = require('material-ui/Toolbar')
-const RequestPaneToolbar = require('./request-pane-toolbar')
-const PureRenderMixin = require('react-addons-pure-render-mixin')
+import React from 'react'
+import {Card, CardHeader, CardText} from 'material-ui/Card'
+import Avatar from 'material-ui/Avatar'
+import {Toolbar, ToolbarGroup} from 'material-ui/Toolbar'
+import RequestPaneToolbar from './request-pane-toolbar'
+import PureRenderMixin from 'react-addons-pure-render-mixin'
 
 /* eslint-disable react/jsx-indent */
 class RequestPane extends React.Component {
@@ -32,5 +32,5 @@ class RequestPane extends React.Component {
   }
 }
 
-module.exports = RequestPane
+export default RequestPane
 /* eslint-enable react/jsx-indent */

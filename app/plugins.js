@@ -1,8 +1,8 @@
-const { homedir } = require('os')
-const { resolve, basename } = require('path')
-const mkdirp = require('mkdirp')
+import { homedir } from 'os'
+import { resolve, basename } from 'path'
+import mkdirp from 'mkdirp'
 
-module.exports = (config) => {
+export default (config) => {
   const pluginDir = resolve(homedir(), '.halland-proxy-plugins')
 
   mkdirp.sync(pluginDir)

@@ -1,4 +1,4 @@
-const { combineReducers } = require('redux')
+import { combineReducers } from 'redux'
 
 function requests (state = [], action) {
   switch (action.type) {
@@ -27,4 +27,4 @@ function requestDetails (state = {}, action) {
   }
 }
 
-module.exports = combineReducers({requests, requestDetails})
+export default combineReducers({requests, requestDetails})

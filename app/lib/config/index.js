@@ -1,8 +1,8 @@
-const { homedir } = require('os')
-const { resolve } = require('path')
-const { readFileSync, writeFileSync } = require('fs')
-const vm = require('vm')
-const { shell } = require('electron')
+import { homedir } from 'os'
+import { resolve } from 'path'
+import { readFileSync, writeFileSync } from 'fs'
+import vm from 'vm'
+import { shell } from 'electron'
 
 const path = resolve(homedir(), '.halland-proxy.js')
 

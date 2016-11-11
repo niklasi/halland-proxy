@@ -1,8 +1,8 @@
-const { createStore, applyMiddleware } = require('redux')
-const thunk = require('redux-thunk')
-const rootReducer = require('../reducers')
+import { createStore, applyMiddleware } from 'redux'
+import thunk from 'redux-thunk'
+import rootReducer from '../reducers'
 
-module.exports = (preloadedState) => {
+export default (preloadedState) => {
   const middlewares = [thunk]
 
   if (process.env.NODE_ENV !== 'production') {

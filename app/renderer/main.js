@@ -1,28 +1,29 @@
-const React = require('react')
-const { render } = require('react-dom')
-const { Provider } = require('react-redux')
-const App = require('./components/app')
-const configureStore = require('./store/configureStore')
-const injectTapEventPlugin = require('react-tap-event-plugin')
-const MuiThemeProvider = require('material-ui/styles/MuiThemeProvider').default
-const darkBaseTheme = require('material-ui/styles/baseThemes/darkBaseTheme').default
-const getMuiTheme = require('material-ui/styles/getMuiTheme').default
-const { addRequest, addResponse } = require('./actions')
-const perf = require('react-addons-perf')
-const ipc = require('electron').ipcRenderer
-const { Router, IndexRoute, Route, createMemoryHistory } = require('react-router')
-const RequestsContainer = require('./components/requests')
-const RequestDetailsContainer = require('./components/response-details')
+import React from 'react'
+import { render } from 'react-dom'
+import { Provider } from 'react-redux'
+import App from './components/app'
+import configureStore from './store/configureStore'
+import injectTapEventPlugin from 'react-tap-event-plugin'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme'
+import getMuiTheme from 'material-ui/styles/getMuiTheme'
+import { addRequest, addResponse } from './actions'
+import perf from 'react-addons-perf'
+import { ipcRenderer } from 'electron'
+import { Router, IndexRoute, Route, createMemoryHistory } from 'react-router'
+import RequestsContainer from './components/requests'
+import RequestDetailsContainer from './components/response-details'
+import title from './components/title'
 
 injectTapEventPlugin()
 
-require('./components/title')()
+title()
 
-ipc.on('add-request', (e, request) => {
+ipcRenderer.on('add-request', (e, request) => {
   store.dispatch(addRequest(request))
 })
 
-ipc.on('add-response', (e, response) => {
+ipcRenderer.on('add-response', (e, response) => {
   store.dispatch(addResponse(response))
 })
 

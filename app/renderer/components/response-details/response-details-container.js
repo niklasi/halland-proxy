@@ -1,7 +1,7 @@
-const React = require('react')
-const { connect } = require('react-redux')
-const { getRequestDetails } = require('../../actions')
-const ResponseDetails = require('./response-details')
+import React from 'react'
+import { connect } from 'react-redux'
+import { getRequestDetails } from '../../actions'
+import ResponseDetails from './response-details'
 
 class ResponseDetailsContainer extends React.Component {
 
@@ -27,4 +27,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-module.exports = connect(mapStateToProps, { getRequestDetails })(ResponseDetailsContainer)
+export default connect(mapStateToProps, { getRequestDetails })(ResponseDetailsContainer)

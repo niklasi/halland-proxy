@@ -1,9 +1,9 @@
-const http = require('http')
-const request = require('request')
-const createProxy = require('../../app/lib/proxy')
-const tap = require('tap')
+import http from 'http'
+import request from 'request'
+import createProxy from '../../app/lib/proxy'
+import tap from 'tap'
 
-const setup = (options, cb) => {
+export function setup (options, cb) {
   if (typeof options === 'function') {
     cb = options
     options = {}
@@ -28,4 +28,3 @@ const setup = (options, cb) => {
   server.listen(0, serverStarted)
 }
 
-module.exports.setup = setup

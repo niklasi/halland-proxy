@@ -1,3 +1,3 @@
-const details = require('./response-details-container')
+import details from './response-details-container'
 
-module.exports = details
+export default details
