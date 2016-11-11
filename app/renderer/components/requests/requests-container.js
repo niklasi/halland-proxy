@@ -14,7 +14,7 @@ const RequestContainer = ({ requests }) => {
   }) {
     return (
       <div key={key} style={style}>
-        <RequestPane key={index} request={requests[index].request} response={requests[index].response} />
+        <RequestPane key={`request-pane-${index}`} request={requests[index].request} response={requests[index].response} />
       </div>
     )
   }
