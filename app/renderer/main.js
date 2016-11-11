@@ -31,7 +31,6 @@ Object.defineProperty(window, 'perf', { get: () => perf })
 const store = configureStore()
 
 const theme = getMuiTheme(darkBaseTheme)
-console.log(theme)
 theme.appBar.height = 32
 theme.toolbar.backgroundColor = theme.palette.canvasColor
 theme.svgIcon.color = theme.palette.primary3Color
