@@ -1,37 +1,9 @@
 import React from 'react'
 import Headers from '../requests/headers'
 import Highlight from 'react-highlight'
-import zlib from 'zlib'
 import hexer from 'hexer'
 import { Tabs, Tab } from 'material-ui/Tabs'
-
-const decompressor = (response) => {
-  if (!response.headers) return Buffer.alloc(0)
-  if (!response.body) return Buffer.alloc(0)
-
-  const body = Buffer.from(response.body.data)
-  switch (response.headers['content-encoding']) {
-    case 'gzip':
-      return zlib.gunzipSync(body)
-    case 'deflate':
-      return zlib.deflateSync(body)
-    default:
-      return body
-  }
-}
-
-const isCompressed = (response) => {
-  if (!response.headers) return null
-
-  switch (response.headers['content-encoding']) {
-    case 'gzip':
-      return true
-    case 'deflate':
-      return true
-    default:
-      return false
-  }
-}
+import decompressor from './decompressor'
 
 const isText = (response) => {
   const contentType = (response.headers ? response.headers['content-type'] : '') || ''
@@ -70,9 +42,7 @@ const tabStyle = {
 }
 
 /* eslint-disable react/jsx-indent */
-export default ({ response }) => {
-  const body = decompressor(response)
-
+const ResponseDetailsTabs = ({ compressedBody, body, response }) => {
   return <Tabs contentContainerStyle={contentContainerStyle} tabItemContainerStyle={tabItemContainerStyle}>
     <Tab key='tab-response-headers' style={tabStyle} label='Headers'>
       {response.headers ? <Headers title='Response headers' headers={response.headers} /> : null}
@@ -88,9 +58,9 @@ export default ({ response }) => {
       {response.body ? <Highlight className='no-highlight'>{hexer(Buffer.from(body), {group: 1})}</Highlight> : null}
     </Tab>
     {
-      isCompressed(response)
+      compressedBody.length > 0
       ? <Tab key='tab-response-compressed' style={tabStyle} label='Compressed'>
-          {response.body ? <Highlight className='no-highlight'>{hexer(Buffer.from(response.body.data), {group: 1})}</Highlight> : null}
+          {response.body ? <Highlight className='no-highlight'>{hexer(compressedBody, {group: 1})}</Highlight> : null}
         </Tab>
       : null
     }
@@ -111,7 +81,6 @@ export default ({ response }) => {
     {
       isImage(response)
       ? <Tab key='tab-response-image' style={tabStyle} label='Image'>
-          {console.log('buffer', Buffer.from(body))}
           <span><img src={`data:${response.headers['content-type'].split(';')[0]};base64,${Buffer.from(body).toString('base64')}`} /></span>
         </Tab>
       : null
@@ -125,4 +94,6 @@ export default ({ response }) => {
     }
   </Tabs>
 }
+
+export default decompressor(ResponseDetailsTabs)
 /* eslint-enable react/jsx-indent */
