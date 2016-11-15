@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import { ADD_REQUEST, ADD_RESPONSE, GET_REQUEST_DETAILS_SUCCESS } from '../../constants/actionTypes'
+import { ADD_REQUEST, ADD_RESPONSE, GET_HTTP_MESSAGE_DETAILS_SUCCESS } from '../../constants/actionTypes'
 
 function requests (state = [], action) {
   switch (action.type) {
@@ -21,7 +21,7 @@ function requests (state = [], action) {
 
 function requestDetails (state = {}, action) {
   switch (action.type) {
-    case GET_REQUEST_DETAILS_SUCCESS:
+    case GET_HTTP_MESSAGE_DETAILS_SUCCESS:
       return action.payload
     default:
       return state

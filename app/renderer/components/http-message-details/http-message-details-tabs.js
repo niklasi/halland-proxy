@@ -12,7 +12,7 @@ const contentContainerStyle = {
 }
 
 /* eslint-disable react/jsx-indent */
-const ResponseDetailsTabs = ({ tabs }) => {
+const MessageDetailsTabs = ({ tabs }) => {
   return <Tabs contentContainerStyle={contentContainerStyle} tabItemContainerStyle={tabItemContainerStyle}>
     {
       tabs.map(tab => tab)
@@ -20,5 +20,5 @@ const ResponseDetailsTabs = ({ tabs }) => {
   </Tabs>
 }
 
-export default decompressor(tabify(ResponseDetailsTabs))
+export default decompressor(tabify(MessageDetailsTabs))
 /* eslint-enable react/jsx-indent */

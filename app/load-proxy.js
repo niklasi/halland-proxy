@@ -4,7 +4,7 @@ import { load as loadConfig } from './lib/config'
 import loadPlugins from './plugins'
 import through from 'through2'
 import { remote, ipcRenderer as ipc } from 'electron'
-import { START_PROXY, ADD_REQUEST, ADD_RESPONSE, REQUEST_DETAILS, SEND_REQUEST_DETAILS } from './constants/ipcMessages'
+import { START_PROXY, ADD_REQUEST, ADD_RESPONSE, HTTP_MESSAGE_DETAILS, SEND_HTTP_MESSAGE_DETAILS } from './constants/ipcMessages'
 
 const config = loadConfig()
 const db = openDb({path: config.db.path, backingStore: config.db.backingStore})
@@ -46,12 +46,12 @@ ipc.on(START_PROXY, (evt, windowId) => {
   })
 })
 
-ipc.on(SEND_REQUEST_DETAILS, (e, requestId) => {
+ipc.on(SEND_HTTP_MESSAGE_DETAILS, (e, requestId) => {
   db.get(`${requestId}!request!meta`, (err, request) => {
     if (err) console.log(err)
     db.get(`${requestId}!response!meta`, (err, response) => {
       if (err) console.log(err)
-      win.webContents.send(REQUEST_DETAILS, { request, response })
+      win.webContents.send(HTTP_MESSAGE_DETAILS, { request, response })
     })
   })
 })

@@ -12,7 +12,7 @@ import perf from 'react-addons-perf'
 import { ipcRenderer as ipc } from 'electron'
 import { Router, IndexRoute, Route, createMemoryHistory } from 'react-router'
 import RequestsContainer from './components/requests'
-import RequestDetailsContainer from './components/response-details'
+import HttpMessageDetailsContainer from './components/http-message-details'
 import title from './components/title'
 import { ADD_REQUEST, ADD_RESPONSE } from '../constants/ipcMessages'
 
@@ -44,7 +44,7 @@ render(
         <Route path='/' component={App}>
           <Route path='requests'>
             <IndexRoute component={RequestsContainer} label='Requests' />
-            <Route path=':id' component={RequestDetailsContainer} label='Details' />
+            <Route path=':id' component={HttpMessageDetailsContainer} label='Details' />
           </Route>
         </Route>
       </Router>
