@@ -8,13 +8,13 @@ export default ({ response = {}, request = {} }) => {
           <Card>
             <CardHeader title='Request' />
             <CardText>
-              <ResponseTabs response={request} />
+              <ResponseTabs httpMessage={request} />
             </CardText>
           </Card>
           <Card>
             <CardHeader title='Response' />
             <CardText>
-              <ResponseTabs response={response} />
+              <ResponseTabs httpMessage={response} />
             </CardText>
           </Card>
          </div>

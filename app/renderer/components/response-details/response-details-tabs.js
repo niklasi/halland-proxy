@@ -12,7 +12,7 @@ const contentContainerStyle = {
 }
 
 /* eslint-disable react/jsx-indent */
-const ResponseDetailsTabs = ({ compressedBody, body, response, tabs }) => {
+const ResponseDetailsTabs = ({ tabs }) => {
   return <Tabs contentContainerStyle={contentContainerStyle} tabItemContainerStyle={tabItemContainerStyle}>
     {
       tabs.map(tab => tab)

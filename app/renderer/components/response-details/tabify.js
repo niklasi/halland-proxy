@@ -68,14 +68,12 @@ export default function tabify (WrappedComponent) {
     </Tab>
   }
 
-  function rawTab (headers, body, response) {
+  function rawTab (startLine, headers, body) {
     if (!headers) return null
-    if (body.length === 0) return null
-    if (!response) return null
     const contentType = headers['content-type']
     const raw = []
-    raw.push(`HTTP/1.1 ${response.statusCode} ${response.statusMessage}`)
-    raw.push(`${Object.keys(response.headers).map(h => `${h}: ${response.headers[h]}`).join('\n')}\n`)
+    raw.push(startLine)
+    raw.push(`${Object.keys(headers).map(h => `${h}: ${headers[h]}`).join('\n')}\n`)
     const encoding = isText(contentType) ? 'utf-8' : 'binary'
     raw.push(body.toString(encoding))
     return <Tab key='tab-response-raw' style={tabStyle} label='Raw'>
@@ -83,8 +81,21 @@ export default function tabify (WrappedComponent) {
     </Tab>
   }
 
-  function tabsFactory (headers, response, body = Buffer.alloc(0), compressedBody = Buffer.alloc(0)) {
-    const contentType = headers ? headers['content-type'] : ''
+  function getStartLine (httpMessage) {
+    const { method, statusCode, statusMessage, path, httpVersion } = httpMessage
+
+    // request
+    if (method) {
+      return `${method} ${path} HTTP/${httpVersion}`
+    }
+
+    // response
+    return `HTTP/${httpVersion} ${statusCode} ${statusMessage}`
+  }
+
+  const Tabs = ({ httpMessage, body, compressedBody }) => {
+    const contentType = httpMessage.headers ? httpMessage.headers['content-type'] : ''
+    const headers = httpMessage.headers
     const tabs = []
     tabs.push(headersTab(headers))
     tabs.push(textTab(contentType, body))
@@ -93,13 +104,9 @@ export default function tabify (WrappedComponent) {
     tabs.push(htmlTab(contentType, body))
     tabs.push(jsonTab(contentType, body))
     tabs.push(imageTab(contentType, body))
-    tabs.push(rawTab(headers, body, response))
-    return tabs
-  }
-
-  const Tabs = (props) => {
-    const tabs = tabsFactory(props.headers, props.response, props.body, props.compressedBody)
-    return <WrappedComponent {...props} tabs={tabs} />
+    const startLine = getStartLine(httpMessage)
+    tabs.push(rawTab(startLine, headers, body))
+    return <WrappedComponent tabs={tabs} />
   }
 
   return Tabs

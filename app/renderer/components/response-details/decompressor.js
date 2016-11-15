@@ -14,13 +14,13 @@ export default function decompressor (WrappedComponent) {
   }
 
   const Decompressor = (props) => {
-    const body = props.response.body ? Buffer.from(props.response.body.data) : Buffer.alloc(0)
+    const body = props.httpMessage.body ? Buffer.from(props.httpMessage.body.data) : Buffer.alloc(0)
 
-    const contentEncoding = props.response.headers ? props.response.headers['content-encoding'] : ''
+    const contentEncoding = props.httpMessage.headers ? props.httpMessage.headers['content-encoding'] : ''
     const decompressedBody = decompress(body, contentEncoding)
     const compressedBody = body === decompressedBody ? Buffer.alloc(0) : body
 
-    return <WrappedComponent response={props.response} compressedBody={compressedBody} body={decompressedBody} headers={props.response.headers} />
+    return <WrappedComponent {...props} compressedBody={compressedBody} body={decompressedBody} />
   }
 
   return Decompressor
