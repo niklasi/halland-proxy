@@ -41,7 +41,7 @@ const createProxy = ({ createRequestOptions, requestStart, createRequestPipe, cr
           .on('data', (data) => responseData.push(data))
           .pipe(response)
 
-        response.on('finish', () => responseDone({ id, headers, statusCode: proxyResponse.statusCode, statusMessage: proxyResponse.statusMessage, body: Buffer.concat(responseData) }))
+        response.on('finish', () => responseDone({ id, headers, statusCode: proxyResponse.statusCode, statusMessage: proxyResponse.statusMessage, httpVersion: proxyResponse.httpVersion, body: Buffer.concat(responseData) }))
       })
 
     const requestData = Object.assign({ id }, requestOptions)
