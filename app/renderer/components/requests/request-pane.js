@@ -15,14 +15,24 @@ class RequestPane extends React.Component {
 
   render () {
     const { request, response = {} } = this.props
+
+    const subtitleStyle = {
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+      maxWidth: '100%'
+    }
+
     return <Card>
             <Toolbar>
-              <ToolbarGroup firstChild>
+              <ToolbarGroup style={{maxWidth: '90%'}} firstChild>
                 <CardHeader
+                  style={{maxWidth: '100%'}}
                   avatar={<Avatar>{response.statusCode}</Avatar>}
                   title={request.host}
+                  textStyle={{maxWidth: '100%'}}
                   subtitle={`${request.method} ${request.path} HTTP/${request.httpVersion}`}
-                  subtitleStyle={{maxWidth: '700px', whiteSpace: 'pre-wrap', wordWrap: 'break-word'}}
+                  subtitleStyle={subtitleStyle}
                 />
               </ToolbarGroup>
               <RequestPaneToolbar requestId={request.id} />
