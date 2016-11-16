@@ -1,5 +1,4 @@
 import React from 'react'
-import { ToolbarGroup } from 'material-ui/Toolbar'
 import IconButton from 'material-ui/IconButton'
 import CodeIcon from 'material-ui/svg-icons/action/code'
 import ReplayIcon from 'material-ui/svg-icons/av/replay'
@@ -13,10 +12,10 @@ class RequestPaneToolbar extends React.Component {
   }
 
   render () {
-    return <ToolbarGroup lastChild>
+    return <div>
         <IconButton><ReplayIcon /></IconButton>
         <Link to={`/requests/${this.props.requestId}`}><IconButton><CodeIcon /></IconButton></Link>
-      </ToolbarGroup>
+      </div>
   }
 }
 /* eslint-enable react/jsx-indent */

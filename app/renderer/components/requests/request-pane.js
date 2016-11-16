@@ -1,9 +1,9 @@
 import React from 'react'
 import {Card, CardHeader, CardText} from 'material-ui/Card'
 import Avatar from 'material-ui/Avatar'
-import {Toolbar, ToolbarGroup} from 'material-ui/Toolbar'
 import RequestPaneToolbar from './request-pane-toolbar'
 import PureRenderMixin from 'react-addons-pure-render-mixin'
+import muiThemeable from 'material-ui/styles/muiThemeable'
 
 /* eslint-disable react/jsx-indent */
 class RequestPane extends React.Component {
@@ -20,27 +20,28 @@ class RequestPane extends React.Component {
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap',
-      maxWidth: '100%'
+      maxWidth: '95%'
     }
 
-    return <Card>
-            <Toolbar>
-              <ToolbarGroup style={{maxWidth: '90%'}} firstChild>
+    return <div style={{display: 'flex'}}>
+             <div style={{flex: '1 1 100%', overflowX: 'hidden'}}>
+              <Card>
                 <CardHeader
-                  style={{maxWidth: '100%'}}
                   avatar={<Avatar>{response.statusCode}</Avatar>}
                   title={request.host}
-                  textStyle={{maxWidth: '100%'}}
                   subtitle={`${request.method} ${request.path} HTTP/${request.httpVersion}`}
+                  textStyle={{maxWidth: '100%'}}
                   subtitleStyle={subtitleStyle}
                 />
-              </ToolbarGroup>
+               <CardText />
+             </Card>
+            </div>
+            <div style={{flex: '1 1 110px', backgroundColor: this.props.muiTheme.baseTheme.palette.canvasColor}}>
               <RequestPaneToolbar requestId={request.id} />
-             </Toolbar>
-             <CardText />
-           </Card>
+             </div>
+          </div>
   }
 }
 
-export default RequestPane
+export default muiThemeable()(RequestPane)
 /* eslint-enable react/jsx-indent */

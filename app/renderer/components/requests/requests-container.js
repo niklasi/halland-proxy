@@ -22,7 +22,7 @@ const RequestContainer = ({ requests }) => {
   return <div style={{height: '100%', width: '100%'}}>
             <AutoSizer>
               {({ height, width }) => (
-                <List rowCount={requests.length} width={width} height={height} rowHeight={() => 97} rowRenderer={rowRenderer} />
+                <List rowCount={requests.length} width={width} height={height} rowHeight={() => 113} rowRenderer={rowRenderer} />
               )}
             </AutoSizer>
          </div>
