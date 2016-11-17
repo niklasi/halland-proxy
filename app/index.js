@@ -11,6 +11,10 @@ app.on('window-all-closed', () => {
   }
 })
 
+process.on('uncaughtException', (err) => {
+  console.log('Crashed...', err)
+})
+
 app.on('ready', () => {
   win = new BrowserWindow({width: 968, height: 800, titleBarStyle: 'hidden-inset'})
   win.loadURL('file://' + resolve(__dirname, 'renderer/index.html'))
