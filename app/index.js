@@ -15,6 +15,10 @@ app.on('ready', () => {
   win = new BrowserWindow({width: 968, height: 800, titleBarStyle: 'hidden-inset'})
   win.loadURL('file://' + resolve(__dirname, 'renderer/index.html'))
 
+  win.on('unresponsive', () => {
+    console.log('BrowserWindow is unresponsive...')
+  })
+
   proxy = new BrowserWindow({width: 400, height: 400, show: false})
   proxy.loadURL('file://' + resolve(__dirname, 'proxy.html'))
 
