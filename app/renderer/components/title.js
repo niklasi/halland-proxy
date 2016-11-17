@@ -1,5 +1,5 @@
 import ip from 'ip'
-import packageJson from '../../package.json'
+import packageJson from '../../../package.json'
 
 export default () => {
   const q = document.querySelector.bind(document)
