@@ -1,8 +1,9 @@
 import React from 'react'
 import { test } from 'babel-tap'
 import { shallow } from 'enzyme'
-import Request from '../../app/renderer/components/requests/request-pane'
+import { RequestPane } from '../../app/renderer/components/requests/request-pane'
 import Toolbar from '../../app/renderer/components/requests/request-pane-toolbar'
+import { getMuiTheme } from 'material-ui/styles'
 
 const defaultRequest = {
   id: '123',
@@ -12,7 +13,8 @@ const defaultRequest = {
 }
 
 function component (request = defaultRequest) {
-  return shallow(<Request request={request} />)
+  const darkBaseTheme = getMuiTheme({userAgent: 'tap'})
+  return shallow(<RequestPane request={request} muiTheme={darkBaseTheme} />)
 }
 
 test('<RequestPane />', t => {

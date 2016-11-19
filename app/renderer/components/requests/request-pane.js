@@ -30,7 +30,7 @@ class RequestPane extends React.Component {
                   avatar={<Avatar>{response.statusCode}</Avatar>}
                   title={request.host}
                   subtitle={`${request.method} ${request.path} HTTP/${request.httpVersion}`}
-                  textStyle={{maxWidth: '100%'}}
+                  textStyle={{minWidth: '100%', maxWidth: '100%'}}
                   subtitleStyle={subtitleStyle}
                 />
                <CardText />
@@ -44,4 +44,6 @@ class RequestPane extends React.Component {
 }
 
 export default muiThemeable()(RequestPane)
+// Export without HoC to make testing easier
+export { RequestPane }
 /* eslint-enable react/jsx-indent */
