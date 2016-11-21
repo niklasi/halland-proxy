@@ -7,7 +7,7 @@ export default function decompressor (WrappedComponent) {
       case 'gzip':
         return zlib.gunzipSync(body)
       case 'deflate':
-        return zlib.deflateSync(body)
+        return zlib.inflateSync(body)
       default:
         return body
     }
