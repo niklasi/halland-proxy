@@ -1,10 +1,14 @@
 {
-  "name": "proxy",
+  "name": "halland-proxy",
+  "productName": "Halland Proxy",
   "version": "0.0.1",
   "description": "x-platform web debugging proxy and testing tool.",
   "scripts": {
     "test": "babel-tap test/**/test-*.js",
-    "start": "electron ."
+    "dev": "babel src --out-dir app --copy-files --watch --source-maps",
+    "start": "electron .",
+    "build": "babel src --out-dir app --copy-files --source-maps",
+    "pack": "npm run build && build --dir"
   },
   "repository": {
     "type": "git",
@@ -25,15 +29,16 @@
   "main": "app/index.js",
   "devDependencies": {
     "babel-cli": "^6.18.0",
+    "babel-preset-es2016-node5": "^1.1.2",
     "babel-preset-react": "^6.16.0",
     "babel-tap": "^5.0.0",
+    "devtron": "^1.4.0",
+    "electron": "^1.4.8",
     "electron-builder": "^8.0.0",
-    "electron-prebuilt-compile": "^1.4.0",
     "enzyme": "^2.5.1",
     "react-addons-test-utils": "^15.3.2",
     "request": "^2.75.0",
     "standard": "^8.0.0",
-    "devtron": "^1.4.0",
     "tap": "^7.1.2"
   },
   "dependencies": {
@@ -64,7 +69,9 @@
   },
   "build": {
     "files": [
-      "**/*",
+      "app/",
+      "src/",
+      "node_modules",
       "!**/node_modules/*/{README.md,README,readme.md,readme,test}",
       "!**/node_modules/.bin",
       "!**/*.{o,hprof,orig,pyc,pyo,rbc}",
