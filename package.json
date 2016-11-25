@@ -4,11 +4,12 @@
   "version": "0.0.1",
   "description": "x-platform web debugging proxy and testing tool.",
   "scripts": {
-    "test": "babel-tap test/**/test-*.js",
+    "test": "standard && babel-tap test/**/test-*.js",
     "dev": "babel src --out-dir app --copy-files --watch --source-maps",
     "start": "electron .",
     "build": "babel src --out-dir app --copy-files --source-maps",
-    "pack": "npm run build && build --dir"
+    "pack": "npm run build && build --dir",
+    "dist": "npm run build && build"
   },
   "repository": {
     "type": "git",
