@@ -1,29 +1,30 @@
 sudo: required
 dist: trusty
-
 language: node_js
-
 matrix:
   include:
-    - os: osx
-      node_js: 6
-    - os: linux
-      node_js: 6
-      env: CC=clang CXX=clang++ npm_config_clang=1
-      compiler: clang
-
+  - os: osx
+    node_js: 6
+  - os: linux
+    node_js: 6
+    env: CC=clang CXX=clang++ npm_config_clang=1
+    compiler: clang
 cache:
   directories:
-    - node_modules
-    - $HOME/.electron
-    - $HOME/.cache
-
+  - node_modules
+  - "$HOME/.electron"
+  - "$HOME/.cache"
 before_script:
-  - npm prune
-
+- npm prune
 after_success:
-  - npm run dist
-
+- npm run dist
 branches:
   except:
-    - "/^v\\d+\\.\\d+\\.\\d+$/"
+  - "/^v\\d+\\.\\d+\\.\\d+$/"
+deploy:
+  provider: releases
+  api_key:
+    secure: HSDYCn/vaqWCXK1ltE+YUatJ8aJh50iX5MTRG5W3A7AmWPND9PyIg3IUmiuq7uOOOufnIuUdzjHhpJiI7vn/HwcI5qaIeYlvXJNG3iNX4gzUPlGNqstrlmcIcXxs/w/m6vcYG8pSWL56l8bma5cs1oLwJ2MGHJuT3MpAAhnXd8c9u+93pV8AwHX7WqYqrHQRcqjQswOdgofOgdtjekWN56Tm9pX6qaGPu11SKCbfUvKJ4+399GP1lIUgpXcfSEZn3vAb9rDa57RQvkIoVpWNHNWa/YWnLwavWhn0na5rc7Je/+SymT95mzNtHtxgZqCpGFjz5x4nzh758bw02gfizQ+TZ6qdwu702REhCdQRpSWMwy+k8UU3aBkCcjPtJXRR6oeMB//BVtmG/xLINtMomaViT/WPDS05D72wEOXmIcn8y3ToJ2D9X9d1/WCGOhEMWPo37G6KY+DTk9JuQ3FV/0gbpIlNgrHJVqwuLxq/3xYqsfrWILW9gyqBRdjdv+3Ra3kWa+JLSBOa5+nsO0qdYIwDhS6r06qhAyiKHdASR69P3DfKOcO99Fl9CsEdG5JdVi3HBjKJW1VWw6Em+UlEQbL15u1iMJR0Wo/ufa7zqG+WiC2YNO3j7kiuxcriBrXaYvUWAEZMqnBm5uKCbAuOm0gMztO9P1r+5pxSEh622Yw=
+  file: 'dist/mac/halland proxy.dmg'
+  on:
+    tags: true
