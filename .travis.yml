@@ -1,9 +1,6 @@
 sudo: required
 dist: trusty
 language: node_js
-env:
-  global:
-    secure: FwqnbdpZu7gPkRU+pbWy8OGblsG7amJdDqA6xtTBFiTots9aXaecJy+Z2jnA7tyzuelhRQ4zzSVVM1013RDQG14tyAdm5Rl912BpwrCRSd6lPtHylxLovnZdZtNCNWBbudeu8yDgzzhFPRvVFUpxU/J1LnQkcLyjuBHKry7qazHC3JIgV5phKr9c1a3HLRtRxmtZia8IzsiQsXYPKwiUU3bfRJ8fJQbbXOKv2xtaS55Spk6NxeYo0NyoEeu50ld8rqbdnEkbt/Go4jOpKZr4BvqHYGUHeDXdsxAwOE/401lOW9GcG1yhXKcm1T/LBj7WN+iD08/ZQmG8V1Q0rgr7Is3V2kjQhRBeniPqup6mn8PvquahT9qKmSqwM5GEGxv2gtAqhYHh36cpClIAxbWAM/Bgv/2uqw6lzSbVysWtgJ7rpeyi3C3y+LKGi7nHxkVm2Zo3N9aLqkloJPVo84Kev1PWJR+j8KCWFErZ1ya5QDzi+krziS2Dx5UFlyrxM9qI3ITDTck+BgpCepuZLz/PAHhxJ9V5GRieKHfXSQ1Qs70SFUkta+6RnSz2SZKSVwEk3X4uva4aJJfR21++jEyFB5WowFRRtVNwMcLja6B3FuTKgOHG8+A11UyFDBfQuiZvU9/nspqaGm4W7HdcSaMXTPTsMjjVlqePxmNr7Uir6BQ=
 matrix:
   include:
   - os: osx
@@ -24,3 +21,11 @@ after_success:
 branches:
   except:
   - "/^v\\d+\\.\\d+\\.\\d+$/"
+deploy:
+  provider: releases
+  api_key:
+    secure: mkqX1Ywm79TrKuaQKOq/dvtb35UIIfLpCz8bDrONfnI5pzhUDSVxl+6cPBPHapnNQ8dxD3pvfGC9PK/ygrz/Fz6Fkwrvw+hJBpcreTQ7LLW1AVu4shevqTI4AsbieCD03iy7nIQETVjsN4rLbb9nXj00C4tUsIViPXqE1rogV4LFX/MI2rqxPnAW1sdE18KX5k2DlvteIfKpO/IZL6q5NUHCofmMNoyJvkQH/VoUnCwHlDx6lr1JhSmd0KbZDO01jsE2LlKLoMUr5a2HCvq6eGBWO4ewyrqDpi1rA+mDSJ8IBI+ppihKsEeQVMlnWRzUKfQJZPVQ06JeoHSR5CWVOHm18+0IszIB9r73k3RIfgmD4uqy15JeLLzRsFsRkCi82luYw0LXEm+SxxdGBDmV5gY80S8gNmEqjq9Wlc3A9ar2NhLotCMTMWkZJ9t/jPrYGycvkmCRshIsQjCw8s5PSw6ZU/3Oni455jXC5Ja6MEYJvBv8ajeWtVI9YeSPBTU+SOssjyw2hSbsdAnjb23E75SQkcntY352aDoWHz+vkaCv4YNr112P2KynbIN/Lwxkd9F8sRVg2r671++4IZoi/0oF3TKhLahTG2GUe4SwZfjaJSm0EPUp6UeuWVsZ6dvJK9XDHmzPU4ayxwYad3ww+5RzSIw12XWhonER0kKtacU=
+  file: "dist/mac/Halland Proxy-0.0.3.dmg"
+  on:
+    tags: true
+    condition: "$TRAVIS_OS_NAME = osx"
