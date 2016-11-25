@@ -1,8 +1,8 @@
 import React from 'react'
 import { test } from 'babel-tap'
 import { shallow } from 'enzyme'
-import { RequestPane } from '../../app/renderer/components/requests/request-pane'
-import Toolbar from '../../app/renderer/components/requests/request-pane-toolbar'
+import { RequestPane } from '../../src/renderer/components/requests/request-pane'
+import Toolbar from '../../src/renderer/components/requests/request-pane-toolbar'
 import { CardHeader } from 'material-ui/Card'
 import { getMuiTheme } from 'material-ui/styles'
 

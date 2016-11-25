@@ -1,7 +1,7 @@
 import React from 'react'
 import { test } from 'babel-tap'
 import { shallow } from 'enzyme'
-import decompressor from '../../app/renderer/components/http-message-details/decompressor'
+import decompressor from '../../src/renderer/components/http-message-details/decompressor'
 import zlib from 'zlib'
 
 function MockWrappedComponent () { return <div /> }

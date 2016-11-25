@@ -1,6 +1,6 @@
 import http from 'http'
 import request from 'request'
-import createProxy from '../../app/lib/proxy'
+import createProxy from '../../src/lib/proxy'
 import tap from 'tap'
 
 function setup (options, cb) {

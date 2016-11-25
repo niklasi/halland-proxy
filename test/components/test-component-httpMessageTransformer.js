@@ -1,7 +1,7 @@
 import React from 'react'
 import { test } from 'babel-tap'
 import { shallow } from 'enzyme'
-import httpMessageTransformer from '../../app/renderer/components/http-message-details/httpMessageTransformer'
+import httpMessageTransformer from '../../src/renderer/components/http-message-details/httpMessageTransformer'
 import zlib from 'zlib'
 
 function MockWrappedComponent () { return <div /> }

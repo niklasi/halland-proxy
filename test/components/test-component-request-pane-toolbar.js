@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router'
 import { test } from 'babel-tap'
 import { shallow } from 'enzyme'
-import Toolbar from '../../app/renderer/components/requests/request-pane-toolbar'
+import Toolbar from '../../src/renderer/components/requests/request-pane-toolbar'
 
 function component (requestId = '123') {
   return shallow(<Toolbar requestId={requestId} />)
