@@ -6,10 +6,10 @@
   "scripts": {
     "test": "standard && babel-tap test/**/test-*.js",
     "dev": "babel src --out-dir app --copy-files --watch --source-maps",
-    "start": "electron .",
+    "start": "npm run build && electron .",
     "build": "babel src --out-dir app --copy-files --source-maps",
-    "pack": "npm run build && build --dir",
-    "dist": "npm run build && build"
+    "pack": "NODE_ENV=production npm run build && build --dir",
+    "dist": "NODE_ENV=production npm run build && build"
   },
   "repository": {
     "type": "git",
@@ -30,6 +30,7 @@
   "main": "app/index.js",
   "devDependencies": {
     "babel-cli": "^6.18.0",
+    "babel-plugin-transform-node-env-inline": "^6.8.0",
     "babel-preset-es2016-node5": "^1.1.2",
     "babel-preset-react": "^6.16.0",
     "babel-tap": "^5.0.0",
