@@ -21,7 +21,10 @@
     "testing",
     "http(s)"
   ],
-  "author": "Niklas Ingholt",
+  "author": {
+    "name": "Niklas Ingholt",
+    "email": "niklas@ingholt.com"
+  },
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/niklasi/hallandproxy/issues"
