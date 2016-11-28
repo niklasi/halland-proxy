@@ -1,6 +1,13 @@
 sudo: required
+
 dist: trusty
+
 language: node_js
+
+env:
+  global:
+    secure: k1u5aITWIBDizTY7oY+DB0tS3NlqsJAo5jdu/ReEyo6f+FJfl7G+FHS4Cu0cGzZu/g9uBDAxiAP9WKuN/8F3fnnEkTL+kBcMDnvCySJtTx1Fj/QSHKt98PgSFdY5UQuOXlBcbTijL3Hz6rKhXo2N5f8qkxxsaNn5b2q1xd/+sGtGJqmK9sFg3czBdR74W3A+hX2Wa5hJYKJVmw52JNoMIuGxEEJiekCJ/3S6LfhgAmXD3tARWdPMIZEYFRXOOZmJ8bnyx6KtrqH8V28RBMqeALyyUie/wUA7CGYuFlc3bCvHc6VHJ/Nl1hMMparuCcMozE6qhCC7JbtGfD0SlZy0I/5X6+QFg7ExeUBkr58gIZETUQpVQ9zU7Ug0aGOU6ya/02iwfMxjqDJpbDAO/zkjWAKVngq8fkdudQj7CIJ038BdAhljnQScOB/gWBkKP1nB6UA3onyAOLxPokveCjji8VlaITotmV9qWcJ93oBkP8rTZoSjP1p4ffNMhenZvOqv1tBqc2PkK1th2TOcUBjy4oEVGTZ6T77EOcrXH1YUuE6ddqAhC9AM27gqihn56D9FrUlj5Qty928IsOP73Xcccr3AuRYSwn5Q+g2N/TTB3QramVcZjQt+zwSD7wZzWZhiIXmqD3ZuUwSZpxHs8/1mtD2IZNl38zTI7PeUtQhyzXs=
+
 matrix:
   include:
   - os: osx
@@ -9,26 +16,19 @@ matrix:
     node_js: 6
     env: CC=clang CXX=clang++ npm_config_clang=1
     compiler: clang
+
 cache:
   directories:
   - node_modules
   - "$HOME/.electron"
   - "$HOME/.cache"
+
 before_script:
 - npm prune
+
 after_success:
 - npm run dist
+
 branches:
-  only:
-  - master
+  except:
   - "/^v\\d+\\.\\d+\\.\\d+$/"
-before_deploy: "TAG_NAME=$TRAVIS_TAG;export RELEASE_VERSION=${TAG_NAME:1}"
-deploy:
-  provider: releases
-  api_key:
-    secure: mkqX1Ywm79TrKuaQKOq/dvtb35UIIfLpCz8bDrONfnI5pzhUDSVxl+6cPBPHapnNQ8dxD3pvfGC9PK/ygrz/Fz6Fkwrvw+hJBpcreTQ7LLW1AVu4shevqTI4AsbieCD03iy7nIQETVjsN4rLbb9nXj00C4tUsIViPXqE1rogV4LFX/MI2rqxPnAW1sdE18KX5k2DlvteIfKpO/IZL6q5NUHCofmMNoyJvkQH/VoUnCwHlDx6lr1JhSmd0KbZDO01jsE2LlKLoMUr5a2HCvq6eGBWO4ewyrqDpi1rA+mDSJ8IBI+ppihKsEeQVMlnWRzUKfQJZPVQ06JeoHSR5CWVOHm18+0IszIB9r73k3RIfgmD4uqy15JeLLzRsFsRkCi82luYw0LXEm+SxxdGBDmV5gY80S8gNmEqjq9Wlc3A9ar2NhLotCMTMWkZJ9t/jPrYGycvkmCRshIsQjCw8s5PSw6ZU/3Oni455jXC5Ja6MEYJvBv8ajeWtVI9YeSPBTU+SOssjyw2hSbsdAnjb23E75SQkcntY352aDoWHz+vkaCv4YNr112P2KynbIN/Lwxkd9F8sRVg2r671++4IZoi/0oF3TKhLahTG2GUe4SwZfjaJSm0EPUp6UeuWVsZ6dvJK9XDHmzPU4ayxwYad3ww+5RzSIw12XWhonER0kKtacU=
-  file: "$TRAVIS_BUILD_DIR/dist/mac/Halland Proxy-$RELEASE_VERSION.dmg"
-  skip_cleanup: true
-  on:
-    tags: true
-    condition: "$TRAVIS_OS_NAME = osx"

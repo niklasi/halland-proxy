@@ -9,11 +9,11 @@
     "start": "npm run build && electron .",
     "build": "babel src --out-dir app --copy-files --source-maps",
     "pack": "NODE_ENV=production npm run build && build --dir",
-    "dist": "NODE_ENV=production npm run build && build"
+    "dist": "NODE_ENV=production npm run build && build --publish onTagOrDraft"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/niklasi/hallandproxy.git"
+    "url": "git+https://github.com/niklasi/halland-proxy.git"
   },
   "keywords": [
     "proxy",
@@ -86,6 +86,9 @@
     "appId": "com.ingholt.hallandproxy",
     "category": "public.app-category.development",
     "dmg": {
+      "publish": [
+        "github"
+      ],
       "contents": [
         {
           "x": 410,
@@ -101,13 +104,12 @@
       ]
     },
     "win": {
-      "remoteReleases": "https://github.com/nilkasi/hallandproxy",
-      "publish": [
-        "github",
-        "bintray"
-      ]
+      "remoteReleases": "https://github.com/nilkasi/hallandproxy"
     },
     "linux": {
+      "publish": [
+        "github"
+      ],
       "publish": null,
       "target": [
         "deb",
