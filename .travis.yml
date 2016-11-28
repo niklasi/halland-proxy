@@ -17,6 +17,11 @@ matrix:
     env: CC=clang CXX=clang++ npm_config_clang=1
     compiler: clang
 
+notifications:
+  email:
+    on_success: never
+    on_failure: change
+
 cache:
   directories:
   - node_modules
