@@ -22,11 +22,12 @@ branches:
   only:
   - master
   - "/^v\\d+\\.\\d+\\.\\d+$/"
+before_deploy: "TAG_NAME=$TRAVIS_TAG;export RELEASE_VERSION=${TAG_NAME:1}"
 deploy:
   provider: releases
   api_key:
     secure: mkqX1Ywm79TrKuaQKOq/dvtb35UIIfLpCz8bDrONfnI5pzhUDSVxl+6cPBPHapnNQ8dxD3pvfGC9PK/ygrz/Fz6Fkwrvw+hJBpcreTQ7LLW1AVu4shevqTI4AsbieCD03iy7nIQETVjsN4rLbb9nXj00C4tUsIViPXqE1rogV4LFX/MI2rqxPnAW1sdE18KX5k2DlvteIfKpO/IZL6q5NUHCofmMNoyJvkQH/VoUnCwHlDx6lr1JhSmd0KbZDO01jsE2LlKLoMUr5a2HCvq6eGBWO4ewyrqDpi1rA+mDSJ8IBI+ppihKsEeQVMlnWRzUKfQJZPVQ06JeoHSR5CWVOHm18+0IszIB9r73k3RIfgmD4uqy15JeLLzRsFsRkCi82luYw0LXEm+SxxdGBDmV5gY80S8gNmEqjq9Wlc3A9ar2NhLotCMTMWkZJ9t/jPrYGycvkmCRshIsQjCw8s5PSw6ZU/3Oni455jXC5Ja6MEYJvBv8ajeWtVI9YeSPBTU+SOssjyw2hSbsdAnjb23E75SQkcntY352aDoWHz+vkaCv4YNr112P2KynbIN/Lwxkd9F8sRVg2r671++4IZoi/0oF3TKhLahTG2GUe4SwZfjaJSm0EPUp6UeuWVsZ6dvJK9XDHmzPU4ayxwYad3ww+5RzSIw12XWhonER0kKtacU=
-  file: "$TRAVIS_BUILD_DIR/dist/mac/Halland Proxy-0.0.6.dmg"
+  file: "$TRAVIS_BUILD_DIR/dist/mac/Halland Proxy-$RELEASE_VERSION.dmg"
   skip_cleanup: true
   on:
     tags: true
