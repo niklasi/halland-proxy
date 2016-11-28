@@ -101,7 +101,7 @@
       ]
     },
     "win": {
-      "remoteReleases": "https://github.com/nilkasi/hallandproxy"
+      "remoteReleases": true
     },
     "linux": {
       "target": [
