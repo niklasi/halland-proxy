@@ -1,6 +1,7 @@
 environment:
   matrix:
     - platform: x64
+  NODE_ENV: production
   GH_TOKEN:
     secure: 1cWm5j4ljdD+w6LLOv24rbj1ON4cbrT49CQype/BCQLtM5sjnD3x83wpIqFhexM9
 
