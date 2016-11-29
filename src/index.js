@@ -6,6 +6,7 @@ let win = null
 let proxy = null
 
 app.on('window-all-closed', () => {
+  console.log('All window closed...')
   if (process.platform !== 'darwin') {
     app.quit()
   }
@@ -44,6 +45,7 @@ app.on('ready', () => {
 
   win.on('closed', () => {
     win = null
+    proxy.close()
     console.log('Gui window closed...')
   })
 
@@ -57,5 +59,6 @@ app.on('ready', () => {
 
   proxy.on('closed', () => {
     proxy = null
+    console.log('Proxy window closed...')
   })
 })
