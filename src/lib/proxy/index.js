@@ -2,6 +2,9 @@ import http from 'http'
 import { parse as urlParser } from 'url'
 import net from 'net'
 import through from 'through2'
+import debugFactory from 'debug'
+
+const debug = debugFactory('halland-proxy:proxy')
 
 const transformHeaders = (headers) => {
   return Object.keys(headers).map(header => {
@@ -26,6 +29,7 @@ const createProxy = ({ createRequestOptions, requestStart, createRequestPipe, cr
     }, urlParser(request.url))
 
     const id = nextId(request.url)
+    debug('New request id...', id)
 
     const requestOptions = createRequestOptions(defaultRequestOptions)
 
@@ -52,7 +56,7 @@ const createProxy = ({ createRequestOptions, requestStart, createRequestPipe, cr
 
   proxy.on('connect', (req, cltSocket, head) => {
     const srvUrl = urlParser(`https://${req.url}`)
-    console.log('connect', srvUrl)
+    debug('connect', srvUrl)
     const srvSocket = net.connect(srvUrl.port, srvUrl.hostname, () => {
       cltSocket.write('HTTP/1.1 200 Connection Established\r\n' +
         'Proxy-agent: Halland-Proxy\r\n' +
