@@ -4,7 +4,11 @@
 
 # Halland-Proxy
 
-A http debugging proxy.
+Halland-Proxy is cross platform http debugging proxy written in javascript (Electron). Halland-Proxy is open source and completely free.
+The goal of the project is to make a fast, stable and extensible application. The application will contain basic functionality, but most of
+its features will be provided by plugins.
+
+It is still, very much, a work in progress and a lot of things can still change. For example the plugin model is likely to change in the future...
 
 # Install
 
@@ -90,11 +94,42 @@ of the following properties.
 
 For more information see the examples folder.
 
+# Contribute
+
+Every contribution in form of code, feature requests, bug reports, documentation etc is greatly appreciated.
+
+## Step 1: Fork
+
+Fork the project and clone your copy.
+
+        $ git clone git@github.com:username/halland-proxy.git
+        $ cd halland-proxy
+        $ git remote add upstream git://github.com/niklasi/halland-proxy.git
+
+## Step 2: Branch
+
+Create a branch and start coding
+
+        $ git checkout -b my-branch -t origin/master
+
+## Step 3: Commit
+
+Commit your work to your fork
+
+## Step 4: Rebase
+
+Use git rebase (not git merge) to sync your work from time to time.
+
+        $ git fetch upstream
+        $ git rebase upstream/master
+
 # TODO
 
 - [ ] TLS
 - [ ] Websockets
 - [ ] UI-plugins
+- [ ] Documentation
+- [ ] Fix a real icon (help needed)
 - [ ] A lot of other stuff...
 
 # License
