@@ -129,7 +129,7 @@ Use git rebase (not git merge) to sync your work from time to time.
 - [ ] Websockets
 - [ ] UI-plugins
 - [ ] Documentation
-- [ ] Fix a real icon (help needed)
+- [ ] Make an icon (help needed)
 - [ ] A lot of other stuff...
 
 # License
