@@ -36,7 +36,7 @@ class RequestPane extends React.Component {
                <CardText />
              </Card>
             </div>
-            <div style={{flex: '1 1 110px', backgroundColor: this.props.muiTheme.baseTheme.palette.canvasColor}}>
+            <div style={{flex: '1 1 140px', backgroundColor: this.props.muiTheme.baseTheme.palette.canvasColor}}>
               <RequestPaneToolbar requestId={request.id} />
              </div>
           </div>
