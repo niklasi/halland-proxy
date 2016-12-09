@@ -27,10 +27,10 @@ export default (config) => {
       console.log(`Failed to load plugin ${name}.`)
     }
     plugin = plugin || {}
-    plugins.requestSetup = plugins.requestSetup.concat(plugin.requestSetup || [])
-    plugins.requestPipe = plugins.requestPipe.concat(plugin.requestPipe || [])
-    plugins.responseHeaders = plugins.responseHeaders.concat(plugin.responseHeaders || [])
-    plugins.responsePipe = plugins.responsePipe.concat(plugin.responsePipe || [])
+    plugins.requestSetup = [...plugins.requestSetups, ...plugin.requestSetup]
+    plugins.requestPipe = [...plugins.requestPipe, ...plugin.requestPipe]
+    plugins.responseHeaders = [...plugins.responseHeaders, ...plugin.responseHeaders]
+    plugins.responsePipe = [...plugins.responsePipe, ...plugin.responsePipe]
   })
 
   return plugins

@@ -38,12 +38,12 @@ const createProxy = ({ createRequestOptions, requestStart, createRequestPipe, cr
         const headers = createResponseHeaders(proxyResponse.headers)
         response.statusCode = proxyResponse.statusCode
 
-        transformHeaders(headers).forEach(header => response.setHeader(header.key, header.value))
-
         const responseData = []
         createResponsePipe(proxyResponse, requestData, headers)
           .on('data', (data) => responseData.push(data))
           .pipe(response)
+
+        transformHeaders(headers).forEach(header => response.setHeader(header.key, header.value))
 
         response.on('finish', () => responseDone({ id, headers, statusCode: proxyResponse.statusCode, statusMessage: proxyResponse.statusMessage, httpVersion: proxyResponse.httpVersion, body: Buffer.concat(responseData) }))
       })
