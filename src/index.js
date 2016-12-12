@@ -1,7 +1,8 @@
-import { app, BrowserWindow, globalShortcut, ipcMain } from 'electron'
+import electron, { app, BrowserWindow, globalShortcut, ipcMain } from 'electron'
 import { resolve } from 'path'
 import { START_PROXY, GET_HTTP_MESSAGE_DETAILS, SEND_HTTP_MESSAGE_DETAILS } from './constants/ipcMessages'
 import debugFactory from 'debug'
+import appMenu from './menu'
 
 const debug = debugFactory('halland-proxy:main')
 
@@ -21,6 +22,7 @@ process.on('uncaughtException', (err) => {
 
 app.on('ready', () => {
   debug('App ready...')
+  electron.Menu.setApplicationMenu(appMenu)
   win = new BrowserWindow({width: 968, height: 800, titleBarStyle: 'hidden-inset'})
   win.loadURL('file://' + resolve(__dirname, 'renderer/index.html'))
 
