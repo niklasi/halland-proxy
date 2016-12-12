@@ -1,7 +1,7 @@
 {
   "name": "halland-proxy",
   "productName": "Halland Proxy",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "x-platform web debugging proxy and testing tool.",
   "scripts": {
     "test": "standard && babel-tap test/**/test-*.js",
