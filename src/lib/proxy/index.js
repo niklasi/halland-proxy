@@ -1,8 +1,10 @@
 import http from 'http'
+import https from 'https'
 import { parse as urlParser } from 'url'
 import net from 'net'
 import through from 'through2'
 import debugFactory from 'debug'
+import generateServerCertificate from './generateServerCertificate'
 
 const debug = debugFactory('halland-proxy:proxy')
 
@@ -12,7 +14,7 @@ const transformHeaders = (headers) => {
   })
 }
 
-const createProxy = ({ createRequestOptions, requestStart, createRequestPipe, createResponseHeaders, createResponsePipe, responseDone }) => {
+const createProxy = ({ ca, createRequestOptions, requestStart, createRequestPipe, createResponseHeaders, createResponsePipe, responseDone }) => {
   const requestCounter = new Map()
 
   const nextId = (url) => {
@@ -21,7 +23,15 @@ const createProxy = ({ createRequestOptions, requestStart, createRequestPipe, cr
     return `${url}-${counter}`.replace(/\.|\?|:|\//g, '-')
   }
 
-  const proxy = http.createServer((request, response) => {
+  const httpProxy = http.createServer()
+  const httpsProxy = https.createServer({})
+
+  httpProxy.on('request', requestHandler)
+  httpsProxy.on('request', requestHandler)
+  httpProxy.on('connect', connect)
+  httpsProxy.on('connect', connect)
+
+  function requestHandler (request, response) {
     const defaultRequestOptions = Object.assign({
       headers: request.headers,
       method: request.method,
@@ -32,42 +42,60 @@ const createProxy = ({ createRequestOptions, requestStart, createRequestPipe, cr
     debug('New request id...', id)
 
     const requestOptions = createRequestOptions(defaultRequestOptions)
+    if (!requestOptions.hostname) {
+      const hostAndPort = requestOptions.headers['host'].split(':')
 
-    const proxyRequest = http.request(requestOptions)
-      .on('response', (proxyResponse) => {
-        const headers = createResponseHeaders(proxyResponse.headers)
-        response.statusCode = proxyResponse.statusCode
+      requestOptions.hostname = requestOptions.hostname || hostAndPort[0]
+      requestOptions.host = requestOptions.host || requestOptions.hostname
 
-        const responseData = []
-        createResponsePipe(proxyResponse, requestData, headers)
-          .on('data', (data) => responseData.push(data))
-          .pipe(response)
+      if (hostAndPort.length > 1) requestOptions.port = hostAndPort[1]
+    }
+    requestOptions.protocol = requestOptions.protocol || 'https:'
 
-        transformHeaders(headers).forEach(header => response.setHeader(header.key, header.value))
+    debug('request options', requestOptions)
+    const proxyRequest = requestOptions.protocol === 'https:' ? https.request(requestOptions) : http.request(requestOptions)
 
-        response.on('finish', () => responseDone({ id, headers, statusCode: proxyResponse.statusCode, statusMessage: proxyResponse.statusMessage, httpVersion: proxyResponse.httpVersion, body: Buffer.concat(responseData) }))
-      })
+    proxyRequest.on('response', (proxyResponse) => {
+      const headers = createResponseHeaders(proxyResponse.headers)
+      response.statusCode = proxyResponse.statusCode
+
+      const responseData = []
+      createResponsePipe(proxyResponse, requestData, headers)
+        .on('data', (data) => responseData.push(data))
+        .pipe(response)
+
+      transformHeaders(headers).forEach(header => response.setHeader(header.key, header.value))
+
+      response.on('finish', () => responseDone({ id, headers, statusCode: proxyResponse.statusCode, statusMessage: proxyResponse.statusMessage, httpVersion: proxyResponse.httpVersion, body: Buffer.concat(responseData) }))
+    })
 
     const requestData = Object.assign({ id }, requestOptions)
     requestStart(requestData)
 
     createRequestPipe(request).pipe(proxyRequest)
-  })
+  }
 
-  proxy.on('connect', (req, cltSocket, head) => {
+  function connect (req, cltSocket, head) {
     const srvUrl = urlParser(`https://${req.url}`)
-    debug('connect', srvUrl)
-    const srvSocket = net.connect(srvUrl.port, srvUrl.hostname, () => {
-      cltSocket.write('HTTP/1.1 200 Connection Established\r\n' +
-        'Proxy-agent: Halland-Proxy\r\n' +
-          '\r\n')
-      srvSocket.write(head)
-      srvSocket.pipe(cltSocket)
-      cltSocket.pipe(srvSocket)
-    })
-  })
 
-  return proxy
+    debug('connect', srvUrl)
+    generateServerCertificate(ca, srvUrl.hostname, (cert, key) => {
+      httpsProxy.addContext(srvUrl.hostname, { key, cert })
+
+      const srvSocket = net.connect(httpsProxy.address().port, passTrough)
+
+      function passTrough () {
+        cltSocket.write('HTTP/1.1 200 Connection Established\r\n' +
+            'Proxy-agent: Halland-Proxy\r\n' +
+              '\r\n')
+        srvSocket.write(head)
+        srvSocket.pipe(cltSocket)
+        cltSocket.pipe(srvSocket)
+      }
+    })
+  }
+
+  return { httpProxy, httpsProxy }
 }
 
 const noopStream = () => {
@@ -101,8 +129,9 @@ const createResponsePipe = (responsePipe) => {
 
 const noop = () => {}
 
-const startProxy = ({ port = 0, requestSetup = [], requestStart = noop, requestPipe = [], responseHeaders = [], responsePipe = [], responseDone = noop }, cb) => {
+const startProxy = ({ port = 0, ca, requestSetup = [], requestStart = noop, requestPipe = [], responseHeaders = [], responsePipe = [], responseDone = noop }, cb) => {
   const options = {
+    ca,
     createRequestOptions: createRequestOptions(requestSetup),
     requestStart,
     createRequestPipe: createRequestPipe(requestPipe),
@@ -111,10 +140,12 @@ const startProxy = ({ port = 0, requestSetup = [], requestStart = noop, requestP
     responseDone
   }
 
-  const proxy = createProxy(options)
+  const { httpProxy, httpsProxy } = createProxy(options)
 
-  proxy.listen(port, () => {
-    if (cb) return cb(null, proxy)
+  httpProxy.listen(port, () => {
+    httpsProxy.listen(0, () => {
+      if (cb) return cb(null, httpProxy)
+    })
   })
 }
 

@@ -5,6 +5,11 @@ import { loadPlugins, updatePlugins, syncPlugins } from './plugins'
 import { remote, ipcRenderer as ipc } from 'electron'
 import { START_PROXY, ADD_REQUEST, ADD_RESPONSE, HTTP_MESSAGE_DETAILS, SEND_HTTP_MESSAGE_DETAILS } from './constants/ipcMessages'
 import debugFactory from 'debug'
+import { generateRootCA, loadRootCA } from './lib/ca'
+import { homedir } from 'os'
+import { existsSync, writeFile } from 'fs'
+import { resolve } from 'path'
+import async from 'async'
 
 const debug = debugFactory('halland-proxy:proxy')
 
@@ -30,7 +35,25 @@ ipc.on('update-plugins', (evt, windowId) => {
 let win
 ipc.on(START_PROXY, (evt, windowId) => {
   win = remote.BrowserWindow.fromId(windowId)
-  startProxy()
+
+  if (existsSync(resolve(homedir(), 'halland-proxy-ca.pem'))) {
+    debug('Halland-Proxy root cert exists...')
+    startProxy()
+  } else {
+    debug('Generate Halland-Proxy root cert...')
+    generateRootCA((err, ca) => {
+      if (err) throw err
+      async.parallel([
+        writeFile.bind(null, resolve(homedir(), 'halland-proxy-ca.pem'), ca.pemCertificate),
+        writeFile.bind(null, resolve(homedir(), 'halland-proxy-ca.private.key'), ca.pemPrivateKey),
+        writeFile.bind(null, resolve(homedir(), 'halland-proxy-ca.public.key'), ca.pemPublicKey)
+      ], (err, result) => {
+        if (err) throw err
+        debug('Halland-Proxy root cert created...')
+        startProxy()
+      })
+    })
+  }
 })
 
 function startProxy () {
@@ -38,27 +61,31 @@ function startProxy () {
   const plugins = loadPlugins(config.plugins)
   debug('Loaded plugins...', plugins)
 
-  const options = {
-    port: config.port,
-    requestSetup: plugins.requestSetup,
-    requestStart: (request) => {
-      db.put(`${request.id}!request`, request)
-      win.webContents.send(ADD_REQUEST, request)
-    },
-    requestPipe: plugins.requestPipe,
-    responseHeaders: plugins.responseHeaders,
-    responsePipe: plugins.responsePipe,
-    responseDone: (response) => {
-      db.put(`${response.id}!response`, response)
-      delete response.body
-      win.webContents.send(ADD_RESPONSE, response)
-    }
-  }
-
-  debug('Create proxy with options...', options)
-  createProxy(options, (err) => {
+  loadRootCA(homedir(), (err, ca) => {
     if (err) throw err
-    debug(`Proxy server started on port ${options.port}...`)
+    const options = {
+      port: config.port,
+      ca,
+      requestSetup: plugins.requestSetup,
+      requestStart: (request) => {
+        db.put(`${request.id}!request`, request)
+        win.webContents.send(ADD_REQUEST, request)
+      },
+      requestPipe: plugins.requestPipe,
+      responseHeaders: plugins.responseHeaders,
+      responsePipe: plugins.responsePipe,
+      responseDone: (response) => {
+        db.put(`${response.id}!response`, response)
+        delete response.body
+        win.webContents.send(ADD_RESPONSE, response)
+      }
+    }
+
+    debug('Create proxy with options...', options)
+    createProxy(options, (err) => {
+      if (err) throw err
+      debug(`Proxy server started on port ${options.port}...`)
+    })
   })
 }
 
