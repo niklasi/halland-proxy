@@ -1,12 +1,19 @@
 import { homedir } from 'os'
 import { resolve, basename } from 'path'
 import { exec } from 'child_process'
-import { writeFileSync } from 'fs'
+import { existsSync, writeFileSync } from 'fs'
 import mkdirp from 'mkdirp'
 import debugFactory from 'debug'
 import shellEnv from 'shell-env'
 
 const debug = debugFactory('halland-proxy:plugins')
+
+const defaultPluginPackageJson = {
+  name: 'halland-proxy-plugins',
+  version: '1.0.0',
+  description: 'Plugins for Halland Proxy.',
+  dependencies: []
+}
 
 function getPluginDir () {
   const pluginDir = resolve(homedir(), '.halland-proxy-plugins')
@@ -16,7 +23,13 @@ function getPluginDir () {
 
 export function syncPlugins (plugins = []) {
   const packageJsonPath = resolve(getPluginDir(), 'package.json')
-  const packageJson = require(packageJsonPath)
+  let packageJson = null
+  if (existsSync(packageJsonPath)) {
+    packageJson = require(packageJsonPath)
+  } else {
+    packageJson = Object.assign({}, defaultPluginPackageJson)
+  }
+
   packageJson.dependencies = []
   plugins.forEach(p => (packageJson.dependencies[p] = 'latest'))
 
