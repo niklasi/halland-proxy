@@ -2,9 +2,9 @@ import http from 'http'
 import https from 'https'
 import { parse as urlParser } from 'url'
 import net from 'net'
+import { generateServerCertificate } from '../ca'
 import through from 'through2'
 import debugFactory from 'debug'
-import generateServerCertificate from './generateServerCertificate'
 
 const debug = debugFactory('halland-proxy:proxy')
 
@@ -72,6 +72,7 @@ const createProxy = ({ ca, createRequestOptions, requestStart, createRequestPipe
     const requestData = Object.assign({ id }, requestOptions)
     requestStart(requestData)
 
+    debug('Create request pipe...')
     createRequestPipe(request).pipe(proxyRequest)
   }
 
@@ -79,20 +80,24 @@ const createProxy = ({ ca, createRequestOptions, requestStart, createRequestPipe
     const srvUrl = urlParser(`https://${req.url}`)
 
     debug('connect', srvUrl)
-    generateServerCertificate(ca, srvUrl.hostname, (cert, key) => {
-      httpsProxy.addContext(srvUrl.hostname, { key, cert })
+    let srvSocket = null
+    if (ca) {
+      generateServerCertificate(ca, srvUrl.hostname, (cert, key) => {
+        httpsProxy.addContext(srvUrl.hostname, { key, cert })
+        srvSocket = net.connect(httpsProxy.address().port, passTrough)
+      })
+    } else {
+      srvSocket = net.connect(srvUrl.port, srvUrl.hostname, passTrough)
+    }
 
-      const srvSocket = net.connect(httpsProxy.address().port, passTrough)
-
-      function passTrough () {
-        cltSocket.write('HTTP/1.1 200 Connection Established\r\n' +
-            'Proxy-agent: Halland-Proxy\r\n' +
-              '\r\n')
-        srvSocket.write(head)
-        srvSocket.pipe(cltSocket)
-        cltSocket.pipe(srvSocket)
-      }
-    })
+    function passTrough () {
+      cltSocket.write('HTTP/1.1 200 Connection Established\r\n' +
+          'Proxy-agent: Halland-Proxy\r\n' +
+            '\r\n')
+      srvSocket.write(head)
+      srvSocket.pipe(cltSocket)
+      cltSocket.pipe(srvSocket)
+    }
   }
 
   return { httpProxy, httpsProxy }
