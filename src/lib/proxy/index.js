@@ -144,8 +144,9 @@ const startProxy = ({ port = 0, ca, requestSetup = [], requestStart = noop, requ
     createResponsePipe: createResponsePipe(responsePipe),
     responseDone
   }
-
   const { httpProxy, httpsProxy } = createProxy(options)
+
+  httpProxy.on('close', httpsProxy.close.bind(httpsProxy))
 
   httpProxy.listen(port, () => {
     httpsProxy.listen(0, () => {
