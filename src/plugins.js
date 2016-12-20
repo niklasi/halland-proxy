@@ -17,6 +17,7 @@ function getPluginDir () {
 export function syncPlugins (plugins = []) {
   const packageJsonPath = resolve(getPluginDir(), 'package.json')
   const packageJson = require(packageJsonPath)
+  packageJson.dependencies = []
   plugins.forEach(p => (packageJson.dependencies[p] = 'latest'))
 
   writeFileSync(packageJsonPath, JSON.stringify(packageJson))
