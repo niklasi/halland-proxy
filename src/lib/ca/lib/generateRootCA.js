@@ -36,7 +36,7 @@ function randomSerialNumber () {
 
 const CAattrs = [{
   name: 'commonName',
-  value: 'HallandProxyCA'
+  value: 'Halland Proxy CA'
 }, {
   name: 'countryName',
   value: 'Internet'
@@ -56,7 +56,7 @@ const CAattrs = [{
 
 const CAextensions = [{
   name: 'basicConstraints',
-  CA: true
+  cA: true
 }, {
   name: 'keyUsage',
   keyCertSign: true,
