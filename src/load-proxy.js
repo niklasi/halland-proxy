@@ -2,16 +2,17 @@ import createProxy from './lib/proxy'
 import openDb from './db'
 import { load as loadConfig } from './lib/config'
 import { loadPlugins, updatePlugins, syncPlugins } from './plugins'
-import { remote, ipcRenderer as ipc } from 'electron'
+import electron, { remote, ipcRenderer as ipc } from 'electron'
 import { START_PROXY, ADD_REQUEST, ADD_RESPONSE, HTTP_MESSAGE_DETAILS, SEND_HTTP_MESSAGE_DETAILS } from './constants/ipcMessages'
 import debugFactory from 'debug'
 import { generateRootCA, loadRootCA } from './lib/ca'
-import { homedir } from 'os'
 import { existsSync, writeFile } from 'fs'
 import { resolve } from 'path'
 import async from 'async'
 
 const debug = debugFactory('halland-proxy:proxy')
+const app = electron.app || electron.remote.app
+const certPath = app.getPath('userData')
 
 debug('Load config...')
 const config = loadConfig()
@@ -35,8 +36,7 @@ ipc.on('update-plugins', (evt, windowId) => {
 let win
 ipc.on(START_PROXY, (evt, windowId) => {
   win = remote.BrowserWindow.fromId(windowId)
-
-  if (existsSync(resolve(homedir(), 'halland-proxy-ca.pem'))) {
+  if (existsSync(resolve(certPath, 'halland-proxy-ca.pem'))) {
     debug('Halland-Proxy root cert exists...')
     startProxy()
   } else {
@@ -44,9 +44,9 @@ ipc.on(START_PROXY, (evt, windowId) => {
     generateRootCA((err, ca) => {
       if (err) throw err
       async.parallel([
-        writeFile.bind(null, resolve(homedir(), 'halland-proxy-ca.pem'), ca.pemCertificate),
-        writeFile.bind(null, resolve(homedir(), 'halland-proxy-ca.private.key'), ca.pemPrivateKey),
-        writeFile.bind(null, resolve(homedir(), 'halland-proxy-ca.public.key'), ca.pemPublicKey)
+        writeFile.bind(null, resolve(certPath, 'halland-proxy-ca.pem'), ca.pemCertificate),
+        writeFile.bind(null, resolve(certPath, 'halland-proxy-ca.private.key'), ca.pemPrivateKey),
+        writeFile.bind(null, resolve(certPath, 'halland-proxy-ca.public.key'), ca.pemPublicKey)
       ], (err, result) => {
         if (err) throw err
         debug('Halland-Proxy root cert created...')
@@ -61,7 +61,7 @@ function startProxy () {
   const plugins = loadPlugins(config.plugins)
   debug('Loaded plugins...', plugins)
 
-  loadRootCA(homedir(), (err, ca) => {
+  loadRootCA(certPath, (err, ca) => {
     if (err) throw err
     const options = {
       port: config.port,
