@@ -49,6 +49,7 @@
   "dependencies": {
     "async": "^2.1.4",
     "bytewise": "^1.1.0",
+    "cert-installer": "^1.0.0",
     "connect": "^3.5.0",
     "debug": "^2.3.3",
     "hexer": "^1.5.0",

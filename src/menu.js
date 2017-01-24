@@ -1,6 +1,7 @@
 import os from 'os'
 import path from 'path'
 import electron, { app, BrowserWindow, shell } from 'electron'
+import certInstaller from 'cert-installer'
 
 const appName = app.getName()
 
@@ -51,12 +52,25 @@ if (process.platform !== 'darwin') {
   })
 }
 
-const pluginSubmenu = [
+const toolsSubmenu = [
   {
     label: 'Update plugins',
     accelerator: 'CmdOrCtrl+U',
     click () {
       sendAction('update-plugins')
+    }
+  },
+  {
+    type: 'separator'
+  },
+  {
+    label: 'Install root cert',
+    accelerator: 'CmdOrCtrl+i',
+    click () {
+      const cert = path.resolve(app.getPath('userData'), 'halland-proxy-ca.pem').replace(/ /g, '\\ ')
+      certInstaller(cert, {trust: true}, (err) => {
+        if (err) console.log('Error installing ca-cert.', err)
+      })
     }
   }
 ]
@@ -128,8 +142,8 @@ const darwinTpl = [
     ]
   },
   {
-    label: 'Plugins',
-    submenu: pluginSubmenu
+    label: 'Tools',
+    submenu: toolsSubmenu
   },
   {
     role: 'window',
