@@ -216,6 +216,10 @@ const otherTpl = [
     ]
   },
   {
+    label: 'Tools',
+    submenu: toolsSubmenu
+  },
+  {
     role: 'help',
     submenu: helpSubmenu
   }
