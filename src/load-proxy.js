@@ -2,8 +2,8 @@ import createProxy from './lib/proxy'
 import openDb from './db'
 import { load as loadConfig } from './lib/config'
 import { loadPlugins, updatePlugins, syncPlugins } from './plugins'
-import electron, { remote, ipcRenderer as ipc } from 'electron'
-import { START_PROXY, ADD_REQUEST, ADD_RESPONSE, HTTP_MESSAGE_DETAILS, SEND_HTTP_MESSAGE_DETAILS } from './constants/ipcMessages'
+import electron, { ipcMain as ipc } from 'electron'
+import { ADD_REQUEST, ADD_RESPONSE, HTTP_MESSAGE_DETAILS, REQUEST_HTTP_MESSAGE_DETAILS } from './constants/ipcMessages'
 import debugFactory from 'debug'
 import { generateRootCA, loadRootCA } from './lib/ca'
 import { existsSync, writeFile } from 'fs'
@@ -22,7 +22,10 @@ syncPlugins(config.plugins)
 debug('Open database...')
 const db = openDb({path: config.db.path, backingStore: config.db.backingStore})
 
-ipc.on('update-plugins', (evt, windowId) => {
+// ipc.on('update-plugins', (evt, windowId) => {
+debug('aaa', aaa)
+
+function aaa () {
   debug('Update plugins...')
   updatePlugins((err) => {
     if (err) {
@@ -31,11 +34,12 @@ ipc.on('update-plugins', (evt, windowId) => {
       debug('Plugins installed successfully...')
     }
   })
-})
+}
 
 let win
-ipc.on(START_PROXY, (evt, windowId) => {
-  win = remote.BrowserWindow.fromId(windowId)
+// ipc.on(START_PROXY, (evt, windowId) => {
+export default function loadProxy (browserWindow) {
+  win = browserWindow
   if (existsSync(resolve(certPath, 'halland-proxy-ca.pem'))) {
     debug('Halland-Proxy root cert exists...')
     startProxy()
@@ -54,7 +58,7 @@ ipc.on(START_PROXY, (evt, windowId) => {
       })
     })
   }
-})
+}
 
 function startProxy () {
   debug('Prepare to start proxy...')
@@ -89,7 +93,7 @@ function startProxy () {
   })
 }
 
-ipc.on(SEND_HTTP_MESSAGE_DETAILS, (e, requestId) => {
+ipc.on(REQUEST_HTTP_MESSAGE_DETAILS, (e, requestId) => {
   db.get(`${requestId}!request`, (err, request) => {
     if (err) debug(err)
     db.get(`${requestId}!response`, (err, response) => {
