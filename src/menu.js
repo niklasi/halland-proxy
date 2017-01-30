@@ -5,10 +5,12 @@ import certInstaller from 'cert-installer'
 
 const appName = app.getName()
 
-function sendAction (action) {
-  const win = BrowserWindow.getAllWindows()[0]
+function getWindow () {
+  return BrowserWindow.getAllWindows()[0]
+}
 
-  win.webContents.send(action)
+function sendAction (action) {
+  getWindow().webContents.send(action)
 }
 
 const helpSubmenu = [
@@ -52,6 +54,22 @@ if (process.platform !== 'darwin') {
   })
 }
 
+const viewSubmenu = [
+  {
+    label: 'Reload',
+    accelerator: 'CmdOrCtrl+R',
+    click () {
+      getWindow().reload()
+    }
+  },
+  {
+    label: 'Toggle Developer Tools',
+    accelerator: 'Alt+CmdOrCtrl+I',
+    click () {
+      getWindow().toggleDevTools()
+    }
+  }
+]
 const toolsSubmenu = [
   {
     label: 'Update plugins',
@@ -142,6 +160,10 @@ const darwinTpl = [
     ]
   },
   {
+    label: 'View',
+    submenu: viewSubmenu
+  },
+  {
     label: 'Tools',
     submenu: toolsSubmenu
   },
@@ -214,6 +236,10 @@ const otherTpl = [
         role: 'selectall'
       }
     ]
+  },
+  {
+    label: 'View',
+    submenu: viewSubmenu
   },
   {
     label: 'Tools',
