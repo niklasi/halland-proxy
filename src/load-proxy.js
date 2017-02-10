@@ -1,7 +1,7 @@
 import createProxy from './lib/proxy'
 import openDb from './db'
 import { load as loadConfig } from './lib/config'
-import { loadPlugins, updatePlugins, syncPlugins } from './plugins'
+import { loadPlugins, syncPlugins } from './plugins'
 import electron, { ipcMain as ipc } from 'electron'
 import { ADD_REQUEST, ADD_RESPONSE, HTTP_MESSAGE_DETAILS, REQUEST_HTTP_MESSAGE_DETAILS } from './constants/ipcMessages'
 import debugFactory from 'debug'
@@ -22,22 +22,8 @@ syncPlugins(config.plugins)
 debug('Open database...')
 const db = openDb({path: config.db.path, backingStore: config.db.backingStore})
 
-// ipc.on('update-plugins', (evt, windowId) => {
-debug('aaa', aaa)
-
-function aaa () {
-  debug('Update plugins...')
-  updatePlugins((err) => {
-    if (err) {
-      debug('Error when installing plugins...', err)
-    } else {
-      debug('Plugins installed successfully...')
-    }
-  })
-}
-
 let win
-// ipc.on(START_PROXY, (evt, windowId) => {
+
 export default function loadProxy (browserWindow) {
   win = browserWindow
   if (existsSync(resolve(certPath, 'halland-proxy-ca.pem'))) {

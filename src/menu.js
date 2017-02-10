@@ -2,16 +2,21 @@ import os from 'os'
 import path from 'path'
 import electron, { app, BrowserWindow, shell } from 'electron'
 import certInstaller from 'cert-installer'
+import { updatePlugins } from './plugins'
+import notify from './notify'
+import debugFactory from 'debug'
 
+const debug = debugFactory('halland-proxy:main')
 const appName = app.getName()
 
 function getWindow () {
   return BrowserWindow.getAllWindows()[0]
 }
 
-function sendAction (action) {
-  getWindow().webContents.send(action)
-}
+// function sendAction (action) {
+//   getWindow().webContents.send(action)
+//   ipcRenderer.send(action)
+// }
 
 const helpSubmenu = [
   {
@@ -75,7 +80,14 @@ const toolsSubmenu = [
     label: 'Update plugins',
     accelerator: 'CmdOrCtrl+U',
     click () {
-      sendAction('update-plugins')
+      debug('Update plugins...')
+      updatePlugins((err) => {
+        if (err) {
+          notify('Error installing plugins', err)
+        } else {
+          notify('Plugins', 'Plugins installed successfully...')
+        }
+      })
     }
   },
   {
