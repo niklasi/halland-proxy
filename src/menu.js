@@ -99,7 +99,11 @@ const toolsSubmenu = [
     click () {
       const cert = path.resolve(app.getPath('userData'), 'halland-proxy-ca.pem').replace(/ /g, '\\ ')
       certInstaller(cert, {trust: true}, (err) => {
-        if (err) console.log('Error installing ca-cert.', err)
+        if (err) {
+          notify('Error installing ca-cert', err.message)
+        } else {
+          notify('Insalling ca-cert', 'Halland-proxy-ca.pem has been successfully installed.')
+        }
       })
     }
   }
