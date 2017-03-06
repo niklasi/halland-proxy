@@ -14,7 +14,7 @@ const transformHeaders = (headers) => {
   })
 }
 
-const createProxy = ({ ca, createRequestOptions, requestStart, createRequestPipe, createResponseHeaders, createResponsePipe, responseDone }) => {
+const createProxy = ({ ca, createRequestOptions, onResponse, requestStart, createRequestPipe, createResponseHeaders, createResponsePipe, responseDone }) => {
   const requestCounter = new Map()
 
   const nextId = (url) => {
