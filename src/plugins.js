@@ -5,6 +5,7 @@ import { existsSync, writeFileSync } from 'fs'
 import mkdirp from 'mkdirp'
 import debugFactory from 'debug'
 import shellEnv from 'shell-env'
+import defaultPlugins from './lib/plugins'
 
 const debug = debugFactory('halland-proxy:plugins')
 
@@ -36,12 +37,7 @@ export function syncPlugins (plugins = []) {
   writeFileSync(packageJsonPath, JSON.stringify(packageJson))
 }
 
-export function loadPlugins (plugins = []) {
-  const pluginDir = getPluginDir()
-  const paths = plugins.map(plugin => {
-    return resolve(pluginDir, 'node_modules', plugin.split('#')[0])
-  })
-
+export function loadPlugins (pluginNames = []) {
   const pluginSetup = {
     requestSetup: [],
     requestPipe: [],
@@ -49,14 +45,19 @@ export function loadPlugins (plugins = []) {
     responsePipe: []
   }
 
-  paths.forEach(path => {
-    let plugin
-    const name = basename(path)
-    try {
-      plugin = require(path)()
-    } catch (err) {
-      debug(`Failed to load plugin ${name}.`)
-    }
+  const pluginDir = getPluginDir()
+  const plugins = pluginNames
+    .map(name => resolve(pluginDir, 'node_modules', name.split('#')[0]))
+    .map(pluginPath => {
+      try {
+        return require(pluginPath)()
+      } catch (err) {
+        debug(`Failed to load plugin ${basename(pluginPath)}.`)
+      }
+    })
+    .concat(defaultPlugins)
+
+  plugins.forEach(plugin => {
     plugin = plugin || {}
     plugin.requestSetup = plugin.requestSetup || []
     plugin.requestPipe = plugin.requestPipe || []
@@ -69,7 +70,7 @@ export function loadPlugins (plugins = []) {
     pluginSetup.responsePipe = [...pluginSetup.responsePipe, ...plugin.responsePipe]
   })
 
-  return plugins
+  return pluginSetup
 }
 
 export function updatePlugins (cb) {
