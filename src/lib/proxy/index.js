@@ -14,7 +14,7 @@ const transformHeaders = (headers) => {
   })
 }
 
-const createProxy = ({ ca, createRequestOptions, onResponse, requestStart, createRequestPipe, createResponseHeaders, createResponsePipe, responseDone }) => {
+const createProxy = ({ ca, plugins, requestStart, responseDone }) => {
   const requestCounter = new Map()
 
   const nextId = (url) => {
@@ -41,7 +41,7 @@ const createProxy = ({ ca, createRequestOptions, onResponse, requestStart, creat
     const id = nextId(request.url)
     debug('New request id...', id)
 
-    const requestOptions = createRequestOptions(defaultRequestOptions)
+    const requestOptions = defaultRequestOptions
     if (!requestOptions.hostname) {
       const hostAndPort = requestOptions.headers['host'].split(':')
 
@@ -52,28 +52,110 @@ const createProxy = ({ ca, createRequestOptions, onResponse, requestStart, creat
     }
     requestOptions.protocol = requestOptions.protocol || 'https:'
 
-    debug('request options', requestOptions)
-    const proxyRequest = requestOptions.protocol === 'https:' ? https.request(requestOptions) : http.request(requestOptions)
+    let proxyRequest = null
+    let requestData = null
 
-    proxyRequest.on('response', (proxyResponse) => {
-      const headers = createResponseHeaders(proxyResponse.headers)
-      response.statusCode = proxyResponse.statusCode
+    let requestSetup = []
+    let onRequest = []
+    let requestPipe = []
+    let onResponse = []
+    let responsePipe = []
+
+    plugins
+      .map(p => p(request, response))
+      .forEach(p => {
+        if (p.requestSetup) requestSetup.push((next) => p.requestSetup(requestOptions, next))
+        if (p.onRequest) onRequest.push((next) => p.onRequest(proxyRequest, next))
+        if (p.requestPipe) requestPipe.push(() => p.requestPipe(proxyRequest))
+        if (p.onResponse) onResponse.push(p.onResponse)
+        if (p.responsePipe) responsePipe.push(p.responsePipe)
+      })
+
+    let handlers = [...requestSetup]
+    handlers.push(createProxyRequest)
+    handlers.push(handleRequest)
+    handlers = [...handlers, ...onRequest]
+    handlers.push(startRequest)
+
+    let index = -1
+    function next () {
+      index++
+      if (index >= handlers.length) return
+
+      const fn = handlers[index]
+
+      return fn(next)
+    }
+
+    const requestBody = []
+    next()
+
+    function createProxyRequest (next) {
+      proxyRequest = requestOptions.protocol === 'https:' ? https.request(requestOptions) : http.request(requestOptions)
+      const _write = proxyRequest.write.bind(proxyRequest)
+      proxyRequest.write = function (chunk, enc, cb) {
+        requestBody.push(Buffer.from(chunk))
+        _write(chunk, enc, cb)
+      }
+      next()
+    }
+
+    function startRequest (next) {
+      debug('Create request pipe...')
+      proxyRequest.on('finish', function () {
+        debug('request options', requestOptions)
+        requestData = Object.assign({ id }, requestOptions, { body: Buffer.concat(requestBody) })
+        requestStart(requestData)
+      })
+
+      requestPipe.reduce((r, p) => {
+        return r.pipe(p(proxyRequest) || noopStream())
+      }, request)
+      .pipe(proxyRequest)
+
+      next()
+    }
+
+    function handleRequest (next) {
+      proxyRequest.on('response', onProxyResponse)
+      next()
+    }
+
+    function onProxyResponse (proxyResponse) {
+      let responseIndex = -1
+      function responseNext () {
+        responseIndex++
+        if (responseIndex >= onResponse.length) return
+
+        const fn = onResponse[responseIndex]
+
+        return fn(proxyResponse, responseNext)
+      }
+
+      responseNext()
 
       const responseData = []
-      createResponsePipe(proxyResponse, requestData, headers)
-        .on('data', (data) => responseData.push(data))
-        .pipe(response)
+      responsePipe.reduce((r, p) => {
+        return r.pipe(p(proxyResponse) || noopStream())
+      }, proxyResponse)
+      .on('data', (data) => {
+        responseData.push(data)
+      })
+      .pipe(response)
 
+      const headers = proxyResponse.headers
       transformHeaders(headers).forEach(header => response.setHeader(header.key, header.value))
 
-      response.on('finish', () => responseDone({ id, headers, statusCode: proxyResponse.statusCode, statusMessage: proxyResponse.statusMessage, httpVersion: proxyResponse.httpVersion, body: Buffer.concat(responseData) }))
-    })
-
-    const requestData = Object.assign({ id }, requestOptions)
-    requestStart(requestData)
-
-    debug('Create request pipe...')
-    createRequestPipe(request).pipe(proxyRequest)
+      response.on('finish', () => {
+        responseDone({
+          id,
+          headers,
+          statusCode: proxyResponse.statusCode,
+          statusMessage: proxyResponse.statusMessage,
+          httpVersion: proxyResponse.httpVersion,
+          body: Buffer.concat(responseData) })
+      })
+    }
   }
 
   function connect (req, cltSocket, head) {
@@ -110,38 +192,13 @@ const noopStream = () => {
   })
 }
 
-const createRequestOptions = (requestSetup) => {
-  return (defaultRequestOptions) => requestSetup.reduce((o, transform) => { return transform(o) }, defaultRequestOptions)
-}
-
-const createRequestPipe = (requestPipe) => {
-  return (request) => requestPipe.reduce((r, p) => {
-    return r.pipe(p() || noopStream())
-  }, request)
-}
-
-const createResponseHeaders = (responseHeaders) => {
-  return (proxyResponseHeaders) => responseHeaders.reduce((headers, transform) => { return transform(headers) }, proxyResponseHeaders)
-}
-
-const createResponsePipe = (responsePipe) => {
-  return (proxyResponse, requestData, headers) => {
-    return responsePipe.reduce((r, p) => {
-      return r.pipe(p(requestData, headers) || noopStream())
-    }, proxyResponse)
-  }
-}
-
 const noop = () => {}
 
-const startProxy = ({ port = 0, ca, requestSetup = [], requestStart = noop, requestPipe = [], responseHeaders = [], responsePipe = [], responseDone = noop }, cb) => {
+const startProxy = ({ port = 0, ca, plugins = [], requestStart = noop, responseDone = noop }, cb) => {
   const options = {
     ca,
-    createRequestOptions: createRequestOptions(requestSetup),
+    plugins,
     requestStart,
-    createRequestPipe: createRequestPipe(requestPipe),
-    createResponseHeaders: createResponseHeaders(responseHeaders),
-    createResponsePipe: createResponsePipe(responsePipe),
     responseDone
   }
   const { httpProxy, httpsProxy } = createProxy(options)

@@ -1,4 +1,4 @@
 
 export default [
-  require('./root-cert-download')()
+  require('./root-cert-download')
 ]

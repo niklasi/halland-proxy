@@ -1,10 +1,8 @@
-module.exports = function addResponseHeader () {
+module.exports = function addResponseHeader (request, response) {
   return {
-    responseHeaders: [
-      (headers) => {
-        headers['x-proxy-agent'] = 'Halland-Proxy'
-        return headers
-      }
-    ]
+    onResponse: function (proxyResponse, next) {
+      proxyResponse.headers['x-proxy-agent'] = 'Halland-Proxy'
+      next()
+    }
   }
 }

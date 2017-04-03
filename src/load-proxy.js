@@ -56,14 +56,11 @@ function startProxy () {
     const options = {
       port: config.port,
       ca,
-      requestSetup: plugins.requestSetup,
-      requestStart: (request) => {
-        db.put(`${request.id}!request`, request)
-        win.webContents.send(ADD_REQUEST, request)
+      plugins,
+      requestStart: (requestOptions) => {
+        db.put(`${requestOptions.id}!request`, requestOptions)
+        win.webContents.send(ADD_REQUEST, requestOptions)
       },
-      requestPipe: plugins.requestPipe,
-      responseHeaders: plugins.responseHeaders,
-      responsePipe: plugins.responsePipe,
       responseDone: (response) => {
         db.put(`${response.id}!response`, response)
         delete response.body

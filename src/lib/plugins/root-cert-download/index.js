@@ -5,19 +5,16 @@ const { resolve } = require('path')
 const app = electron.app || electron.remote.app
 const certPath = app.getPath('userData')
 
-module.exports = function downloadRootCert () {
+module.exports = function downloadRootCert (request, response) {
   return {
-    responsePipe: [
-      function rootCertPipe (requestInfo, responseHeaders) {
-        if (requestInfo.href === 'http://bit.ly/hlnd-tls') {
-          responseHeaders['content-type'] = 'octet/stream'
-          responseHeaders['Content-Disposition'] = 'attachment; filename="halland-proxy-ca.pem"'
-          delete responseHeaders.location
-          delete responseHeaders.server
-          delete responseHeaders['set-coookie']
-          return fs.createReadStream(resolve(certPath, 'halland-proxy-ca.pem'))
-        }
-      }
-    ]
+    requestSetup: function (requestOptions, next) {
+      if (requestOptions.href !== 'http://bit.ly/hlnd-tls') return next()
+
+      response.setHeader('content-type', 'octet/stream')
+      response.setHeader('content-disposition', 'attachment; filename="halland-proxy-ca.pem"')
+      response.statusCode = 200
+      response.statusMessage = 'OK'
+      fs.createReadStream(resolve(certPath, 'halland-proxy-ca.pem')).pipe(response)
+    }
   }
 }

@@ -1,18 +1,17 @@
 const { parse } = require('url')
 
-module.exports = function addQueryStringPlugin () {
+module.exports = function addQueryStringPlugin (request, response) {
   return {
-    requestSetup: [
-      function (options) {
-        const query = 'abc=123'
-        const url = parse(options.path)
-        if (!url.query) {
-          options.path += `?${query}`
-        } else {
-          options.path += `&${query}`
-        }
-        return options
+    requestSetup: function (requestOptions, next) {
+      const query = 'abc=123'
+      const url = parse(requestOptions.path)
+      if (!url.query) {
+        requestOptions.path += `?${query}`
+      } else {
+        requestOptions.path += `&${query}`
       }
-    ]
+
+      next()
+    }
   }
 }

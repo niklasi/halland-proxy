@@ -38,13 +38,6 @@ export function syncPlugins (plugins = []) {
 }
 
 export function loadPlugins (pluginNames = []) {
-  const pluginSetup = {
-    requestSetup: [],
-    requestPipe: [],
-    responseHeaders: [],
-    responsePipe: []
-  }
-
   const pluginDir = getPluginDir()
   const plugins = pluginNames
     .map(name => resolve(pluginDir, 'node_modules', name.split('#')[0]))
@@ -57,20 +50,7 @@ export function loadPlugins (pluginNames = []) {
     })
     .concat(defaultPlugins)
 
-  plugins.forEach(plugin => {
-    plugin = plugin || {}
-    plugin.requestSetup = plugin.requestSetup || []
-    plugin.requestPipe = plugin.requestPipe || []
-    plugin.responseHeaders = plugin.responseHeaders || []
-    plugin.responsePipe = plugin.responsePipe || []
-
-    pluginSetup.requestSetup = [...pluginSetup.requestSetup, ...plugin.requestSetup]
-    pluginSetup.requestPipe = [...pluginSetup.requestPipe, ...plugin.requestPipe]
-    pluginSetup.responseHeaders = [...pluginSetup.responseHeaders, ...plugin.responseHeaders]
-    pluginSetup.responsePipe = [...pluginSetup.responsePipe, ...plugin.responsePipe]
-  })
-
-  return pluginSetup
+  return plugins.map(x => x || {})
 }
 
 export function updatePlugins (cb) {
