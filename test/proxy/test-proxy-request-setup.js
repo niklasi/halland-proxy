@@ -1,17 +1,19 @@
 import tap from 'tap'
 import common from './common'
 
-const requestSetup = [
-  (options) => {
-    options.path += '?mode=test'
-    return options
+const plugin = function (req, res) {
+  return {
+    requestSetup: (requestOption, next) => {
+      requestOption.path += '?mode=test'
+      return next()
+    }
   }
-]
+}
 
 tap.test('setup request', (test) => {
   test.plan(1)
 
-  common.setup({ requestSetup }, (err, { request, server }) => {
+  common.setup({ plugins: [plugin] }, (err, { request, server }) => {
     if (err) test.fail()
 
     server.on('request', (req, res) => {

@@ -1,17 +1,19 @@
 import tap from 'tap'
 import common from './common'
 
-const responseHeaders = [
-  (headers) => {
-    headers['x-test-header'] = 'test'
-    return headers
+const plugin = function (req, res) {
+  return {
+    onResponse: (proxyResponse, next) => {
+      proxyResponse.headers['x-test-header'] = 'test'
+      return next()
+    }
   }
-]
+}
 
 tap.test('modify response headers', (test) => {
   test.plan(1)
 
-  common.setup({ responseHeaders }, (err, { request, server }) => {
+  common.setup({ plugins: [plugin] }, (err, { request, server }) => {
     if (err) test.fail()
 
     server.on('request', (req, res) => {

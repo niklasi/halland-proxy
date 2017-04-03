@@ -2,19 +2,21 @@ import tap from 'tap'
 import common from './common'
 import through from 'through2'
 
-const responsePipe = [
-  (requestData, headers) => {
-    return through(function (chunk, enc, cb) {
-      this.push(chunk.toString() + ' response pipe')
-      cb()
-    })
+const plugin = function (req, res) {
+  return {
+    responsePipe: (proxyResponse) => {
+      return through(function (chunk, enc, cb) {
+        this.push(chunk.toString() + ' response pipe')
+        cb()
+      })
+    }
   }
-]
+}
 
 tap.test('modify respone body', (test) => {
   test.plan(1)
 
-  common.setup({ responsePipe }, (err, { request, server }) => {
+  common.setup({ plugins: [plugin] }, (err, { request, server }) => {
     if (err) test.fail()
 
     server.on('request', (req, res) => {
