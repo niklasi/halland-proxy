@@ -43,53 +43,46 @@ This will change in the future and it is possible that the plugin-api will chang
 A plugin is just a normal node module that exports a function that returns an object with at least one 
 of the following properties.
 
-    module.exports = function myPlugin () {
+    module.exports = function myPlugin (request, response) {
       return {
-        requestSetup: [
-          function (options) {
-            /*
-              options.headers = {name: value}
-              options.method = '' (GET, POST, ...)
-              options.httpVersion = '' (1.0, 1.1)
-              options.protocol = '' (http:, https:)
-              options.hostname = '' (host.com)
-              options.port = '' (80, 443, ...)
-              options.path = '' (/p/a/t/h?query=string)
-            */
-            return options
-          }
-        ],
-        requestPipe: [
-          function (request) {
-            /*
-            request = http.IncomingMessage (See nodejs documentation for more info)
-            Return a nodejs transform stream. A handy way to create transform streams
-            is to use the module through2. 
-            */
-            return TransformStream
-          }
-        ],
-        responseHeaders: [
-          function (headers) {
-            /*
-              headers = {name: value}
-            */
-            return headers
-          }
-        ],
-        responsePipe: [
-          function (requestInfo, responseHeaders) {
-            /*
-            proxyResponse = http.IncomingMessage (See nodejs documentation for more info)
-            requestInfo = This is the object that is returned from requestSetup
-            responseHeaders = {name: value}
-            Return a nodejs transform stream. A handy way to create transform streams
-            is to use the module through2. 
-            */
-            return TranformStream
-          }
-        ]
-      }
+        requestSetup: function (requestOptions, next) {
+          /*
+           requestOptions.headers = {name: value}
+           requestOptions.method = '' (GET, POST, ...)
+           requestOptions.httpVersion = '' (1.0, 1.1)
+           requestOptions.protocol = '' (http:, https:)
+           requestOptions.hostname = '' (host.com)
+           requestOptions.port = '' (80, 443, ...)
+           requestOptions.path = '' (/p/a/t/h?query=string)
+          */
+
+          // Call next to proceed
+          next()
+        },
+        onRequest: function (proxyRequest, next) {
+          // proxyRequest = http.ClientRequest (See nodejs documentation for more info)
+          // Call next to proceed
+          next()
+        },
+        requestPipe: function (proxyRequest) {
+          // proxyRequest = http.ClientRequest (See nodejs documentation for more info)
+          // Return a nodejs transform stream. A handy way to create transform streams
+          // is to use the module through2. 
+          return TransformStream
+        },
+        onResponse: function (proxyResponse, next) {
+          // proxyResponse = http.IncomingMessage (See nodejs documentation for more info)
+          // Call next to proceed
+          next()
+        },
+        responsePipe: function (proxyResponse) {
+          /*
+          proxyResponse = http.IncomingMessage (See nodejs documentation for more info)
+          Return a nodejs transform stream. A handy way to create transform streams
+          is to use the module through2. 
+          */
+          return TranformStream
+        }
     }
 
 For more information see the examples folder.
