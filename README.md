@@ -87,6 +87,10 @@ of the following properties.
 
 For more information see the examples folder.
 
+# TLS Proxying
+
+Read more about tls proxying [ here](https://github.com/niklasi/halland-proxy/tls.md).
+
 # Contribute
 
 Every contribution in form of code, feature requests, bug reports, documentation etc is greatly appreciated.
@@ -118,7 +122,7 @@ Use git rebase (not git merge) to sync your work from time to time.
 
 # TODO
 
-- [ ] TLS
+- [x] TLS
 - [ ] Websockets
 - [ ] UI-plugins
 - [ ] Documentation
