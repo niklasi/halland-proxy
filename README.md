@@ -89,7 +89,7 @@ For more information see the examples folder.
 
 # TLS Proxying
 
-Read more about tls proxying [ here](https://github.com/niklasi/halland-proxy/tls.md).
+Read more about tls proxying [ here](https://github.com/niklasi/halland-proxy/blob/master/tls.md).
 
 # Contribute
 
