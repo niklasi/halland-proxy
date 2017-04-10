@@ -5,6 +5,7 @@ import net from 'net'
 import { generateServerCertificate } from '../ca'
 import through from 'through2'
 import debugFactory from 'debug'
+import async from 'async'
 
 const debug = debugFactory('halland-proxy:proxy')
 
@@ -205,10 +206,14 @@ const startProxy = ({ port = 0, ca, plugins = [], requestStart = noop, responseD
 
   httpProxy.on('close', httpsProxy.close.bind(httpsProxy))
 
-  httpProxy.listen(port, () => {
-    httpsProxy.listen(0, () => {
-      if (cb) return cb(null, httpProxy)
-    })
+  async.parallel([
+    (cb) => httpProxy.listen(port, (err) => cb(err, httpProxy)),
+    (cb) => httpsProxy.listen(0, (err) => cb(err, httpsProxy))
+  ], (err, proxies) => {
+    if (err) throw err
+
+    debug('Proxies', proxies)
+    if (cb) return cb(null, proxies)
   })
 }
 

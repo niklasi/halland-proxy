@@ -2,8 +2,8 @@ import createProxy from './lib/proxy'
 import openDb from './db'
 import { load as loadConfig } from './lib/config'
 import { loadPlugins, syncPlugins } from './plugins'
-import electron, { ipcMain as ipc } from 'electron'
-import { ADD_REQUEST, ADD_RESPONSE, HTTP_MESSAGE_DETAILS, REQUEST_HTTP_MESSAGE_DETAILS } from './constants/ipcMessages'
+import electron, { remote, ipcRenderer as ipc } from 'electron'
+import { START_PROXY, ADD_REQUEST, ADD_RESPONSE, HTTP_MESSAGE_DETAILS, REQUEST_HTTP_MESSAGE_DETAILS } from './constants/ipcMessages'
 import debugFactory from 'debug'
 import { generateRootCA, loadRootCA } from './lib/ca'
 import { existsSync, writeFile } from 'fs'
@@ -12,7 +12,6 @@ import async from 'async'
 
 const debug = debugFactory('halland-proxy:proxy')
 const app = electron.app || electron.remote.app
-const certPath = app.getPath('userData')
 
 debug('Load config...')
 const config = loadConfig()
@@ -24,11 +23,33 @@ const db = openDb({path: config.db.path, backingStore: config.db.backingStore})
 
 let win
 
-export default function loadProxy (browserWindow) {
-  win = browserWindow
+ipc.on(START_PROXY, (e, windowId) => {
+  debug('Start proxy requested...')
+  win = remote.BrowserWindow.fromId(windowId)
+  startProxy()
+})
+
+function startProxy () {
+  debug('Prepare to start proxy...')
+
+  async.waterfall([
+    prepareRootCA,
+    loadRootCA,
+    setupProxyOptions,
+    createProxy
+  ], (err, proxies) => {
+    if (err) throw err
+
+    debug(`Http proxy server started on port ${proxies[0].address().port}...`)
+    debug(`Https proxy server started on port ${proxies[1].address().port}...`)
+  })
+}
+
+function prepareRootCA (cb) {
+  const certPath = app.getPath('userData')
   if (existsSync(resolve(certPath, 'halland-proxy-ca.pem'))) {
     debug('Halland-Proxy root cert exists...')
-    startProxy()
+    return cb(null, certPath)
   } else {
     debug('Generate Halland-Proxy root cert...')
     generateRootCA((err, ca) => {
@@ -40,40 +61,31 @@ export default function loadProxy (browserWindow) {
       ], (err, result) => {
         if (err) throw err
         debug('Halland-Proxy root cert created...')
-        startProxy()
+        return cb(err, certPath)
       })
     })
   }
 }
 
-function startProxy () {
-  debug('Prepare to start proxy...')
+function setupProxyOptions (ca, cb) {
   const plugins = loadPlugins(config.plugins)
   debug('Loaded plugins...', plugins)
-
-  loadRootCA(certPath, (err, ca) => {
-    if (err) throw err
-    const options = {
-      port: config.port,
-      ca,
-      plugins,
-      requestStart: (requestOptions) => {
-        db.put(`${requestOptions.id}!request`, requestOptions)
-        win.webContents.send(ADD_REQUEST, requestOptions)
-      },
-      responseDone: (response) => {
-        db.put(`${response.id}!response`, response)
-        delete response.body
-        win.webContents.send(ADD_RESPONSE, response)
-      }
+  const options = {
+    port: config.port,
+    ca,
+    plugins,
+    requestStart: (requestOptions) => {
+      db.put(`${requestOptions.id}!request`, requestOptions)
+      win.webContents.send(ADD_REQUEST, requestOptions)
+    },
+    responseDone: (response) => {
+      db.put(`${response.id}!response`, response)
+      delete response.body
+      win.webContents.send(ADD_RESPONSE, response)
     }
+  }
 
-    debug('Create proxy with options...', options)
-    createProxy(options, (err) => {
-      if (err) throw err
-      debug(`Proxy server started on port ${options.port}...`)
-    })
-  })
+  return cb(null, options)
 }
 
 ipc.on(REQUEST_HTTP_MESSAGE_DETAILS, (e, requestId) => {
