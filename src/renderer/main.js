@@ -13,12 +13,9 @@ import { ipcRenderer as ipc } from 'electron'
 import { Router, IndexRoute, Route, createMemoryHistory } from 'react-router'
 import RequestsContainer from './components/requests'
 import HttpMessageDetailsContainer from './components/http-message-details'
-import title from './components/title'
 import { ADD_REQUEST, ADD_RESPONSE } from '../constants/ipcMessages'
 
 injectTapEventPlugin()
-
-title()
 
 ipc.on(ADD_REQUEST, (e, request) => {
   store.dispatch(addRequest(request))
