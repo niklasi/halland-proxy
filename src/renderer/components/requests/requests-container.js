@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import RequestPane from './request-pane'
 import { connect } from 'react-redux'
 import { List, AutoSizer } from 'react-virtualized'
@@ -30,7 +31,7 @@ const RequestContainer = ({ requests }) => {
 /* eslint-enable react/jsx-indent */
 
 RequestContainer.propTypes = {
-  requests: React.PropTypes.array.isRequired
+  requests: PropTypes.array.isRequired
 }
 
 const mapStateToProps = ({ requests, responses }) => ({ requests, responses })

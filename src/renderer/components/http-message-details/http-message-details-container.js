@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { getHttpMessageDetails } from '../../actions'
 import MessageDetails from './http-message-details'
@@ -14,9 +15,9 @@ class HttpMessageDetailsContainer extends React.Component {
 }
 
 HttpMessageDetailsContainer.propTypes = {
-  request: React.PropTypes.object,
-  response: React.PropTypes.object,
-  params: React.PropTypes.object.isRequired
+  request: PropTypes.object,
+  response: PropTypes.object,
+  params: PropTypes.object.isRequired
 }
 
 const mapStateToProps = (state) => {
