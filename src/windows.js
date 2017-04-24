@@ -17,6 +17,7 @@ export function createMainWindow () {
   mainWindow.loadURL('file://' + resolve(__dirname, 'renderer/index.html'))
   mainWindow.on('close', () => {
     mainWindow = null
+    if (proxyWindow) proxyWindow.close()
   })
 
   return mainWindow
