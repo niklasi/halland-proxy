@@ -15,12 +15,13 @@ function setup (options, cb) {
     createProxy(options, proxyStarted)
   }
 
-  const proxyStarted = (err, proxy) => {
+  const proxyStarted = (err, proxies) => {
     if (err) tap.bailout('can not create proxy...')
-    server.on('close', proxy.close.bind(proxy))
+    server.on('close', proxies[0].close.bind(proxies[0]))
+    server.on('close', proxies[1].close.bind(proxies[1]))
 
     return cb(null, {
-      request: request.defaults({'proxy': 'http://127.0.0.1:' + proxy.address().port}),
+      request: request.defaults({'proxy': 'http://127.0.0.1:' + proxies[0].address().port}),
       server
     })
   }
