@@ -1,22 +1,14 @@
 import os from 'os'
 import path from 'path'
-import electron, { app, BrowserWindow, shell } from 'electron'
+import electron, { app, shell } from 'electron'
 import certInstaller from 'cert-installer'
 import { updatePlugins } from './plugins'
 import notify from './notify'
 import debugFactory from 'debug'
+import { getMainWindow } from './windows'
 
 const debug = debugFactory('halland-proxy:main')
 const appName = app.getName()
-
-function getWindow () {
-  return BrowserWindow.getAllWindows()[0]
-}
-
-// function sendAction (action) {
-//   getWindow().webContents.send(action)
-//   ipcRenderer.send(action)
-// }
 
 const helpSubmenu = [
   {
@@ -64,14 +56,14 @@ const viewSubmenu = [
     label: 'Reload',
     accelerator: 'CmdOrCtrl+R',
     click () {
-      getWindow().reload()
+      getMainWindow().reload()
     }
   },
   {
     label: 'Toggle Developer Tools',
     accelerator: 'Alt+CmdOrCtrl+I',
     click () {
-      getWindow().toggleDevTools()
+      getMainWindow().toggleDevTools()
     }
   }
 ]

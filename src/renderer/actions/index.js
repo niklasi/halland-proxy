@@ -1,6 +1,7 @@
 import { ipcRenderer } from 'electron'
 import { ADD_REQUEST, ADD_RESPONSE, GET_HTTP_MESSAGE_DETAILS_SUCCESS } from '../../constants/actionTypes'
 import { REQUEST_HTTP_MESSAGE_DETAILS, HTTP_MESSAGE_DETAILS } from '../../constants/ipcMessages'
+import { sendToProxyWindow } from '../../windows'
 
 export function addRequest (request) {
   return {type: ADD_REQUEST, payload: request}
@@ -16,7 +17,7 @@ export function getHttpMessageDetailsSuccess (data) {
 
 export function getHttpMessageDetails (requestId) {
   return (dispatch) => {
-    ipcRenderer.send(REQUEST_HTTP_MESSAGE_DETAILS, requestId)
+    sendToProxyWindow(REQUEST_HTTP_MESSAGE_DETAILS, requestId)
     ipcRenderer.on(HTTP_MESSAGE_DETAILS, (e, details) => {
       dispatch(getHttpMessageDetailsSuccess(details))
     })

@@ -2,13 +2,14 @@ import createProxy from './lib/proxy'
 import openDb from './db'
 import { load as loadConfig } from './lib/config'
 import { loadPlugins, syncPlugins } from './plugins'
-import electron, { remote, ipcRenderer as ipc } from 'electron'
+import electron, { ipcRenderer as ipc } from 'electron'
 import { START_PROXY, ADD_REQUEST, ADD_RESPONSE, HTTP_MESSAGE_DETAILS, REQUEST_HTTP_MESSAGE_DETAILS } from './constants/ipcMessages'
 import debugFactory from 'debug'
 import { generateRootCA, loadRootCA } from './lib/ca'
 import { existsSync, writeFile } from 'fs'
 import { resolve } from 'path'
 import async from 'async'
+import { sendToMainWindow } from './windows'
 
 const debug = debugFactory('halland-proxy:proxy')
 const app = electron.app || electron.remote.app
@@ -21,11 +22,8 @@ syncPlugins(config.plugins)
 debug('Open database...')
 const db = openDb({path: config.db.path, backingStore: config.db.backingStore})
 
-let win
-
-ipc.on(START_PROXY, (e, windowId) => {
+ipc.on(START_PROXY, (e) => {
   debug('Start proxy requested...')
-  win = remote.BrowserWindow.fromId(windowId)
   startProxy()
 })
 
@@ -76,12 +74,13 @@ function setupProxyOptions (ca, cb) {
     plugins,
     requestStart: (requestOptions) => {
       db.put(`${requestOptions.id}!request`, requestOptions)
-      win.webContents.send(ADD_REQUEST, requestOptions)
+      debug(`Send ${ADD_REQUEST}...`)
+      sendToMainWindow(ADD_REQUEST, requestOptions)
     },
     responseDone: (response) => {
       db.put(`${response.id}!response`, response)
       delete response.body
-      win.webContents.send(ADD_RESPONSE, response)
+      sendToMainWindow(ADD_RESPONSE, response)
     }
   }
 
@@ -94,7 +93,7 @@ ipc.on(REQUEST_HTTP_MESSAGE_DETAILS, (e, requestId) => {
     db.get(`${requestId}!response`, (err, response) => {
       if (err) debug(err)
       debug('Send http message details...')
-      win.webContents.send(HTTP_MESSAGE_DETAILS, { request, response })
+      sendToMainWindow(HTTP_MESSAGE_DETAILS, { request, response })
     })
   })
 })
