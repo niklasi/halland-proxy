@@ -69,4 +69,3 @@ export function updatePlugins (cb) {
     })
   }).catch(cb)
 }
-

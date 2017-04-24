@@ -4,7 +4,6 @@ import { getHttpMessageDetails } from '../../actions'
 import MessageDetails from './http-message-details'
 
 class HttpMessageDetailsContainer extends React.Component {
-
   componentDidMount () {
     this.props.getHttpMessageDetails(this.props.params.id)
   }

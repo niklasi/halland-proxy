@@ -27,4 +27,3 @@ tap.test('proxy simple http GET requests', (test) => {
         })
   })
 })
-

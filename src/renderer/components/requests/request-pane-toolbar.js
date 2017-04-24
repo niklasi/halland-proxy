@@ -6,7 +6,6 @@ import { Link } from 'react-router'
 
 /* eslint-disable react/jsx-indent */
 class RequestPaneToolbar extends React.Component {
-
   shouldComponentUpdate () {
     return false
   }

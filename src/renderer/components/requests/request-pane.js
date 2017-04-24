@@ -7,7 +7,6 @@ import muiThemeable from 'material-ui/styles/muiThemeable'
 
 /* eslint-disable react/jsx-indent */
 class RequestPane extends React.Component {
-
   constructor (props) {
     super(props)
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)

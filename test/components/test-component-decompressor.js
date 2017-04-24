@@ -66,4 +66,3 @@ test('deflate compression', t => {
   t.same(Buffer.from('a b c'), props.body)
   t.end()
 })
-
