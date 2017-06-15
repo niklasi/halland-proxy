@@ -23,7 +23,7 @@ function generateServerCertificate (ca = {cert: {}, keys: {privateKey: '', publi
   certServer.setIssuer(ca.cert.issuer.attributes)
   certServer.setExtensions(ServerExtensions.concat([{
     name: 'subjectAltName',
-    altNames: host.match(/^[\d.]+$/) ? {type: 7, ip: host} : {type: 2, value: host}
+    altNames: host.match(/^[\d.]+$/) ? [{type: 7, ip: host}] : [{type: 2, value: host}]
   }]))
   certServer.sign(ca.keys.privateKey, Forge.md.sha256.create())
   const certPem = pki.certificateToPem(certServer)
