@@ -135,6 +135,9 @@ const createProxy = ({ ca, plugins, requestStart, responseDone }) => {
 
       responseNext()
 
+      response.statusCode = proxyResponse.statusCode
+      response.statusMessage = proxyResponse.statusMessage
+
       const responseData = []
       responsePipe.reduce((r, p) => {
         return r.pipe(p(proxyResponse) || noopStream())
