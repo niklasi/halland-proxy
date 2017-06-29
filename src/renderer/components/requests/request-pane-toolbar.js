@@ -1,8 +1,10 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import IconButton from 'material-ui/IconButton'
 import CodeIcon from 'material-ui/svg-icons/action/code'
 import ReplayIcon from 'material-ui/svg-icons/av/replay'
 import { Link } from 'react-router'
+import { replayRequest } from '../../actions'
 
 /* eslint-disable react/jsx-indent */
 class RequestPaneToolbar extends React.Component {
@@ -12,10 +14,10 @@ class RequestPaneToolbar extends React.Component {
 
   render () {
     return <div>
-        <IconButton><ReplayIcon /></IconButton>
+        <IconButton onTouchTap={() => this.props.replayRequest(this.props.requestId)}><ReplayIcon /></IconButton>
         <Link to={`/requests/${this.props.requestId}`}><IconButton><CodeIcon /></IconButton></Link>
       </div>
   }
 }
 /* eslint-enable react/jsx-indent */
-export default RequestPaneToolbar
+export default connect(() => { return {} }, { replayRequest })(RequestPaneToolbar)

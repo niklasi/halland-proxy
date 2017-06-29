@@ -3,7 +3,7 @@ import openDb from './db'
 import { load as loadConfig } from './lib/config'
 import { loadPlugins, syncPlugins } from './plugins'
 import electron, { ipcRenderer as ipc } from 'electron'
-import { START_PROXY, ADD_REQUEST, ADD_RESPONSE, HTTP_MESSAGE_DETAILS, REQUEST_HTTP_MESSAGE_DETAILS } from './constants/ipcMessages'
+import { START_PROXY, ADD_REQUEST, ADD_RESPONSE, HTTP_MESSAGE_DETAILS, REQUEST_HTTP_MESSAGE_DETAILS, HTTP_MESSAGE_REQUEST, REQUEST_HTTP_MESSAGE_REQUEST } from './constants/ipcMessages'
 import debugFactory from 'debug'
 import { generateRootCA, loadRootCA } from './lib/ca'
 import { existsSync, writeFile } from 'fs'
@@ -95,5 +95,13 @@ ipc.on(REQUEST_HTTP_MESSAGE_DETAILS, (e, requestId) => {
       debug('Send http message details...')
       sendToMainWindow(HTTP_MESSAGE_DETAILS, { request, response })
     })
+  })
+})
+
+ipc.on(REQUEST_HTTP_MESSAGE_REQUEST, (e, requestId) => {
+  db.get(`${requestId}!request`, (err, request) => {
+    if (err) return debug(err)
+
+    sendToMainWindow(HTTP_MESSAGE_REQUEST, request)
   })
 })
