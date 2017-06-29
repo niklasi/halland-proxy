@@ -32,18 +32,17 @@ export function replayRequest (requestId) {
   return (dispatch) => {
     sendToProxyWindow(REQUEST_HTTP_MESSAGE_REQUEST, requestId)
     ipcRenderer.once(HTTP_MESSAGE_REQUEST, (e, request) => {
-
       const options = {
         port: config.port,
         hostname: 'localhost',
         method: request.method,
         path: `${request.protocol}//${request.host}${request.path}`,
         headers: request.headers
-      };
+      }
 
-      const req = http.request(options);
+      const req = http.request(options)
       req.write(Buffer.from(request.body.data))
-      req.end();
+      req.end()
     })
   }
 }
