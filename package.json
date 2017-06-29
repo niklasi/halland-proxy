@@ -38,7 +38,7 @@
     "babel-preset-react": "^6.16.0",
     "babel-tap": "^5.0.0",
     "devtron": "^1.4.0",
-    "electron": "^1.7.3",
+    "electron": "^1.6.11",
     "electron-builder": "^18.8.1",
     "enzyme": "^2.5.1",
     "react-addons-test-utils": "^15.6.0",
@@ -47,7 +47,7 @@
     "tap": "^7.1.2"
   },
   "dependencies": {
-    "async": "^2.4.1",
+    "async": "^2.5.0",
     "bytewise": "^1.1.0",
     "cert-installer": "^1.0.0",
     "connect": "^3.6.2",
@@ -72,7 +72,7 @@
     "react-tap-event-plugin": "^2.0.0",
     "react-ui": "^0.6.2",
     "react-virtualized": "^8.5.1",
-    "redux": "^3.2.1",
+    "redux": "^3.7.1",
     "redux-logger": "^2.4.0",
     "redux-thunk": "^1.0.3",
     "shell-env": "^0.3.0",
