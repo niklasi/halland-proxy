@@ -5,7 +5,7 @@ environment:
   GH_TOKEN:
     secure: 1cWm5j4ljdD+w6LLOv24rbj1ON4cbrT49CQype/BCQLtM5sjnD3x83wpIqFhexM9
 
-image: Visual Studio 2015
+image: Visual Studio 2017
 
 cache:
   - node_modules
