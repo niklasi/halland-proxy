@@ -90,7 +90,6 @@
     ],
     "asar": false,
     "appId": "com.ingholt.hallandproxy",
-    "category": "public.app-category.development",
     "dmg": {
       "contents": [
         {
@@ -107,7 +106,6 @@
       ]
     },
     "win": {
-      "remoteReleases": true
     },
     "linux": {
       "target": [
