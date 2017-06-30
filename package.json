@@ -9,7 +9,7 @@
     "start": "npm run build && electron .",
     "build": "babel src --out-dir app --copy-files --source-maps",
     "pack": "npm run build && build --dir",
-    "dist": "npm run build && build --draft"
+    "dist": "npm run build && build --publish onTagOrDraft"
   },
   "repository": {
     "type": "git",
