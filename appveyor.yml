@@ -7,9 +7,6 @@ environment:
 
 image: Visual Studio 2017
 
-cache:
-  - node_modules
-
 install:
   - ps: Install-Product node 8 x64
   - set CI=true
