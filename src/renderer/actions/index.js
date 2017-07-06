@@ -1,6 +1,17 @@
 import { ipcRenderer } from 'electron'
-import { ADD_REQUEST, ADD_RESPONSE, GET_HTTP_MESSAGE_DETAILS_SUCCESS } from '../../constants/actionTypes'
-import { REQUEST_HTTP_MESSAGE_DETAILS, HTTP_MESSAGE_DETAILS, HTTP_MESSAGE_REQUEST, REQUEST_HTTP_MESSAGE_REQUEST } from '../../constants/ipcMessages'
+import {
+  ADD_REQUEST,
+  ADD_RESPONSE,
+  UPDATE_FILTER,
+  GET_HTTP_MESSAGE_DETAILS_SUCCESS,
+  TOGGLE_FILTER_INPUT
+} from '../../constants/actionTypes'
+import {
+  REQUEST_HTTP_MESSAGE_DETAILS,
+  HTTP_MESSAGE_DETAILS,
+  HTTP_MESSAGE_REQUEST,
+  REQUEST_HTTP_MESSAGE_REQUEST
+} from '../../constants/ipcMessages'
 import { sendToProxyWindow } from '../../windows'
 import http from 'http'
 import { load as loadConfig } from '../../lib/config'
@@ -45,4 +56,12 @@ export function replayRequest (requestId) {
       req.end()
     })
   }
+}
+
+export function updateFilter (filter) {
+  return {type: UPDATE_FILTER, payload: filter}
+}
+
+export function toggleFilterInput () {
+  return {type: TOGGLE_FILTER_INPUT}
 }

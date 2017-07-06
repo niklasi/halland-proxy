@@ -7,13 +7,13 @@ import injectTapEventPlugin from 'react-tap-event-plugin'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
-import { addRequest, addResponse } from './actions'
+import { addRequest, addResponse, toggleFilterInput } from './actions'
 import perf from 'react-addons-perf'
 import { ipcRenderer as ipc } from 'electron'
 import { Router, IndexRoute, Route, createMemoryHistory } from 'react-router'
 import RequestsContainer from './components/requests'
 import HttpMessageDetailsContainer from './components/http-message-details'
-import { ADD_REQUEST, ADD_RESPONSE } from '../constants/ipcMessages'
+import { ADD_REQUEST, ADD_RESPONSE, TOGGLE_FILTER_INPUT } from '../constants/ipcMessages'
 
 injectTapEventPlugin()
 
@@ -23,6 +23,10 @@ ipc.on(ADD_REQUEST, (e, request) => {
 
 ipc.on(ADD_RESPONSE, (e, response) => {
   store.dispatch(addResponse(response))
+})
+
+ipc.on(TOGGLE_FILTER_INPUT, (e) => {
+  store.dispatch(toggleFilterInput())
 })
 
 Object.defineProperty(window, 'perf', { get: () => perf })

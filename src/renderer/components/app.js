@@ -5,6 +5,8 @@ import AppBar from 'material-ui/AppBar'
 import IconButton from 'material-ui/IconButton'
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import BackIcon from 'material-ui/svg-icons/navigation/chevron-left'
+import { connect } from 'react-redux'
+import { toggleFilterInput } from '../actions'
 
 const titleStyle = {
   textAlign: 'center',
@@ -44,7 +46,7 @@ const App = (props) => {
                                     }
                                     iconStyleLeft={appBarIconStyleLeft(currentRoute.path)}
                                     iconElementRight={
-                                    <IconButton style={buttonStyle}>
+                                    <IconButton onClick={props.toggleFilterInput} style={buttonStyle}>
                                       <SearchIcon />
                                     </IconButton>
                                   }
@@ -56,4 +58,4 @@ const App = (props) => {
                             </div>
 }
 
-export default withRouter(App)
+export default connect((state) => state, { toggleFilterInput })(withRouter(App))

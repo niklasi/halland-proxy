@@ -1,19 +1,65 @@
 import { combineReducers } from 'redux'
-import { ADD_REQUEST, ADD_RESPONSE, GET_HTTP_MESSAGE_DETAILS_SUCCESS } from '../../constants/actionTypes'
+import {
+  ADD_REQUEST,
+  ADD_RESPONSE,
+  UPDATE_FILTER,
+  GET_HTTP_MESSAGE_DETAILS_SUCCESS,
+  TOGGLE_FILTER_INPUT
+} from '../../constants/actionTypes'
 
-function requests (state = [], action) {
+function http (state = {
+  messages: [],
+  filter: []
+}, action) {
   switch (action.type) {
     case ADD_REQUEST:
       const id = action.payload.id
       const request = action.payload
-      return state.concat([{ id, request }])
+
+      if (state.filter.length > 0) {
+        const addRequestFilter = new RegExp(state.filter.join('|'), 'i')
+        if (!addRequestFilter.test(request.host)) return state
+      }
+
+      state.messages.push({ id, request })
+
+      return Object.assign({}, state)
 
     case ADD_RESPONSE:
-      const responseIndex = state.findIndex(item => item.id === action.payload.id)
-      if (responseIndex === -1) return state.concat([{ id: action.payload.id, response: action.payload }])
+      const responseIndex = state.messages.findIndex(item => item.id === action.payload.id)
+      if (responseIndex === -1) return state
 
-      const responseItem = state[responseIndex]
-      return [].concat(state.slice(0, responseIndex)).concat([{ id: responseItem.id, request: responseItem.request, response: action.payload }]).concat(state.slice(responseIndex + 1))
+      const responseItem = state.messages[responseIndex]
+      state.messages = []
+        .concat(state.messages.slice(0, responseIndex))
+        .concat([{ id: responseItem.id, request: responseItem.request, response: action.payload }])
+        .concat(state.messages.slice(responseIndex + 1))
+
+      return Object.assign({}, state)
+
+    case UPDATE_FILTER:
+      state.filter = action.payload
+      if (state.filter.length > 0) {
+        const regExpFilter = new RegExp(state.filter.join('|'), 'i')
+        state.messages = state.messages
+          .filter(x => regExpFilter.test(x.request.host))
+      }
+
+      return Object.assign({}, state)
+
+    default:
+      return state
+  }
+}
+
+function ui (state = {
+  displayFilter: false
+}, action) {
+  switch (action.type) {
+    case TOGGLE_FILTER_INPUT:
+      state.displayFilter = !state.displayFilter
+
+      return Object.assign({}, state)
     default:
       return state
   }
@@ -28,4 +74,4 @@ function requestDetails (state = {}, action) {
   }
 }
 
-export default combineReducers({requests, requestDetails})
+export default combineReducers({http, requestDetails, ui})

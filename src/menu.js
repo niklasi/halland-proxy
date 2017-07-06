@@ -5,7 +5,8 @@ import certInstaller from 'cert-installer'
 import { updatePlugins } from './plugins'
 import notify from './notify'
 import debugFactory from 'debug'
-import { getMainWindow } from './windows'
+import { getMainWindow, sendToMainWindow } from './windows'
+import { TOGGLE_FILTER_INPUT } from './constants/ipcMessages'
 
 const debug = debugFactory('halland-proxy:main')
 const appName = app.getName()
@@ -50,6 +51,49 @@ if (process.platform !== 'darwin') {
     }
   })
 }
+
+const editSubmenu = [
+  {
+    role: 'undo'
+  },
+  {
+    role: 'redo'
+  },
+  {
+    type: 'separator'
+  },
+  {
+    role: 'cut'
+  },
+  {
+    role: 'copy'
+  },
+  {
+    role: 'paste'
+  },
+  {
+    role: 'pasteandmatchstyle'
+  },
+  {
+    role: 'delete'
+  },
+  {
+    type: 'separator'
+  },
+  {
+    role: 'selectall'
+  },
+  {
+    type: 'separator'
+  },
+  {
+    label: 'Filter',
+    accelerator: 'CmdOrCtrl+F',
+    click () {
+      sendToMainWindow(TOGGLE_FILTER_INPUT)
+    }
+  }
+]
 
 const viewSubmenu = [
   {
@@ -137,35 +181,7 @@ const darwinTpl = [
   },
   {
     label: 'Edit',
-    submenu: [
-      {
-        role: 'undo'
-      },
-      {
-        role: 'redo'
-      },
-      {
-        type: 'separator'
-      },
-      {
-        role: 'cut'
-      },
-      {
-        role: 'copy'
-      },
-      {
-        role: 'paste'
-      },
-      {
-        role: 'pasteandmatchstyle'
-      },
-      {
-        role: 'delete'
-      },
-      {
-        role: 'selectall'
-      }
-    ]
+    submenu: editSubmenu
   },
   {
     label: 'View',
@@ -212,38 +228,7 @@ const otherTpl = [
   },
   {
     label: 'Edit',
-    submenu: [
-      {
-        role: 'undo'
-      },
-      {
-        role: 'redo'
-      },
-      {
-        type: 'separator'
-      },
-      {
-        role: 'cut'
-      },
-      {
-        role: 'copy'
-      },
-      {
-        role: 'paste'
-      },
-      {
-        role: 'pasteandmatchstyle'
-      },
-      {
-        role: 'delete'
-      },
-      {
-        type: 'separator'
-      },
-      {
-        role: 'selectall'
-      }
-    ]
+    submenu: editSubmenu
   },
   {
     label: 'View',
