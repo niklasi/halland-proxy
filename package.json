@@ -7,6 +7,7 @@
     "test": "standard && babel-tap test/**/test-*.js",
     "dev": "babel src --out-dir app --copy-files --watch --source-maps",
     "start": "npm run build && electron .",
+    "postinstall": "electron-builder install-app-deps",
     "build": "babel src --out-dir app --copy-files --source-maps",
     "pack": "npm run build && build --dir",
     "dist": "npm run build && build --draft"
