@@ -117,5 +117,8 @@
         "AppImage"
       ]
     }
+  },
+  "optionalDependencies": {
+    "7zip-bin": "^2.2.3"
   }
 }
