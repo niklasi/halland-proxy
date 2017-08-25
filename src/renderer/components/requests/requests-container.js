@@ -24,9 +24,10 @@ class RequestContainer extends React.Component {
       isVisible,   // This row is visible within the List (eg it is not an overscanned row)
       style        // Style object to be applied to row (to position it)
     }) {
+    const requestPaneKey = `request-pane-${index}`
     return (
         <div key={key} style={style}>
-          <RequestPane key={`request-pane-${index}`} request={this.props.http.messages[index].request} response={this.props.http.messages[index].response} />
+          <RequestPane key={requestPaneKey} request={this.props.http.messages[index].request} response={this.props.http.messages[index].response} />
         </div>
     )
   }
@@ -42,7 +43,7 @@ class RequestContainer extends React.Component {
       <ChipInput ref={(input) => { this.chipInput = input }} onChange={this.props.updateFilter} style={chipStyle} />
       <AutoSizer>
       {({ height, width }) => (
-        <List rowCount={this.props.http.messages.length} width={width} height={height} rowHeight={() => 113} rowRenderer={this.rowRenderer} />
+        <List rowCount={this.props.http.messages.length} width={width} height={height} rowHeight={() => 153} rowRenderer={this.rowRenderer} />
       )}
       </AutoSizer>
       </div>

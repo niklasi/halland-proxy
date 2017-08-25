@@ -6,6 +6,7 @@ import { generateServerCertificate } from '../ca'
 import through from 'through2'
 import debugFactory from 'debug'
 import async from 'async'
+import present from 'present'
 
 const debug = debugFactory('halland-proxy:proxy')
 
@@ -91,8 +92,15 @@ const createProxy = ({ ca, plugins, requestStart, responseDone }) => {
     const requestBody = []
     next()
 
+    const requestStartTime = present()
+    let dnsLookupTime = 0
     function createProxyRequest (next) {
       proxyRequest = requestOptions.protocol === 'https:' ? https.request(requestOptions) : http.request(requestOptions)
+      proxyRequest.on('socket', socket => {
+        socket.on('lookup', () => {
+          dnsLookupTime = present() - requestStartTime
+        })
+      })
       const _write = proxyRequest.write.bind(proxyRequest)
       proxyRequest.write = function (chunk, enc, cb) {
         requestBody.push(Buffer.from(chunk))
@@ -151,13 +159,22 @@ const createProxy = ({ ca, plugins, requestStart, responseDone }) => {
       transformHeaders(headers).forEach(header => response.setHeader(header.key, header.value))
 
       response.on('finish', () => {
+        const body = Buffer.concat(responseData)
+        const metadata = {
+          responseTime: present() - requestStartTime,
+          responseSize: body.length,
+          dnsLookupTime
+        }
+
         responseDone({
           id,
           headers,
           statusCode: proxyResponse.statusCode,
           statusMessage: proxyResponse.statusMessage,
           httpVersion: proxyResponse.httpVersion,
-          body: Buffer.concat(responseData) })
+          body,
+          metadata
+        })
       })
     }
   }
