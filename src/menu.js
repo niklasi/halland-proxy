@@ -1,7 +1,7 @@
 import os from 'os'
 import path from 'path'
 import electron, { app, shell } from 'electron'
-import certInstaller from 'cert-installer'
+import installCert from 'cert-installer'
 import { updatePlugins } from './plugins'
 import notify from './notify'
 import debugFactory from 'debug'
@@ -133,8 +133,8 @@ const toolsSubmenu = [
     label: 'Install root cert',
     accelerator: 'CmdOrCtrl+i',
     click () {
-      const cert = path.resolve(app.getPath('userData'), 'halland-proxy-ca.pem').replace(/ /g, '\\ ')
-      certInstaller(cert, {trust: true}, (err) => {
+      const cert = path.resolve(app.getPath('userData'), 'halland-proxy-ca.pem')
+      installCert(`"${cert}"`, {trust: true}, (err) => {
         if (err) {
           notify('Error installing ca-cert', err.message)
         } else {
