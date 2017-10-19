@@ -9,19 +9,25 @@ import {
 
 function http (state = {
   messages: [],
-  filter: []
+  filter: [],
+  filteredMessages: []
 }, action) {
+  function filterMessages (filter, messages) {
+    if (state.filter.length > 0) {
+      const regExpFilter = new RegExp(state.filter.join('|'), 'i')
+      return state.messages.filter(x => regExpFilter.test(x.request.host))
+    }
+
+    return state.messages
+  }
+
   switch (action.type) {
     case ADD_REQUEST:
       const id = action.payload.id
       const request = action.payload
 
-      if (state.filter.length > 0) {
-        const addRequestFilter = new RegExp(state.filter.join('|'), 'i')
-        if (!addRequestFilter.test(request.host)) return state
-      }
-
       state.messages.push({ id, request })
+      state.filteredMessages = filterMessages(state.filter, state.messages)
 
       return Object.assign({}, state)
 
@@ -35,15 +41,13 @@ function http (state = {
         .concat([{ id: responseItem.id, request: responseItem.request, response: action.payload }])
         .concat(state.messages.slice(responseIndex + 1))
 
+      state.filteredMessages = filterMessages(state.filter, state.messages)
+
       return Object.assign({}, state)
 
     case UPDATE_FILTER:
       state.filter = action.payload
-      if (state.filter.length > 0) {
-        const regExpFilter = new RegExp(state.filter.join('|'), 'i')
-        state.messages = state.messages
-          .filter(x => regExpFilter.test(x.request.host))
-      }
+      state.filteredMessages = filterMessages(state.filter, state.messages)
 
       return Object.assign({}, state)
 

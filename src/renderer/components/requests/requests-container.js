@@ -27,7 +27,7 @@ class RequestContainer extends React.Component {
     const requestPaneKey = `request-pane-${index}`
     return (
         <div key={key} style={style}>
-          <RequestPane key={requestPaneKey} request={this.props.http.messages[index].request} response={this.props.http.messages[index].response} />
+          <RequestPane key={requestPaneKey} request={this.props.messages[index].request} response={this.props.messages[index].response} />
         </div>
     )
   }
@@ -40,10 +40,10 @@ class RequestContainer extends React.Component {
     }
 
     return <div style={{height: '100%', width: '100%'}}>
-      <ChipInput ref={(input) => { this.chipInput = input }} onChange={this.props.updateFilter} style={chipStyle} />
+      <ChipInput ref={(input) => { this.chipInput = input }} defaultValue={this.props.filter} onChange={this.props.updateFilter} style={chipStyle} />
       <AutoSizer>
       {({ height, width }) => (
-        <List rowCount={this.props.http.messages.length} width={width} height={height} rowHeight={() => 153} rowRenderer={this.rowRenderer} />
+        <List rowCount={this.props.messages.length} width={width} height={height} rowHeight={() => 153} rowRenderer={this.rowRenderer} />
       )}
       </AutoSizer>
       </div>
@@ -52,11 +52,15 @@ class RequestContainer extends React.Component {
 /* eslint-enable react/jsx-indent */
 
 RequestContainer.propTypes = {
-  http: PropTypes.object.isRequired
+  messages: PropTypes.array.isRequired
 }
 
 const mapStateToProps = (state) => {
-  return state
+  return {
+    messages: state.http.filteredMessages,
+    filter: state.http.filter,
+    ui: state.ui
+  }
 }
 
 export default connect(mapStateToProps, { updateFilter })(RequestContainer)
