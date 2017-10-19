@@ -7,6 +7,7 @@ import through from 'through2'
 import debugFactory from 'debug'
 import async from 'async'
 import present from 'present'
+import uuid from 'uuid/v1'
 
 const debug = debugFactory('halland-proxy:proxy')
 
@@ -17,14 +18,6 @@ const transformHeaders = (headers) => {
 }
 
 const createProxy = ({ ca, plugins, requestStart, responseDone }) => {
-  const requestCounter = new Map()
-
-  const nextId = (url) => {
-    let counter = requestCounter.get(url) || 0
-    requestCounter.set(url, ++counter)
-    return `${url}-${counter}`.replace(/\.|\?|:|\//g, '-')
-  }
-
   const httpProxy = http.createServer()
   const httpsProxy = https.createServer({})
 
@@ -40,7 +33,7 @@ const createProxy = ({ ca, plugins, requestStart, responseDone }) => {
       httpVersion: request.httpVersion
     }, urlParser(request.url))
 
-    const id = nextId(request.url)
+    const id = uuid()
     debug('New request id...', id)
 
     const requestOptions = defaultRequestOptions

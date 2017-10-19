@@ -81,7 +81,8 @@
     "redux-logger": "^2.4.0",
     "redux-thunk": "^1.0.3",
     "shell-env": "^0.3.0",
-    "through2": "^2.0.1"
+    "through2": "^2.0.1",
+    "uuid": "^3.1.0"
   },
   "build": {
     "files": [
