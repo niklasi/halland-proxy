@@ -22,5 +22,12 @@ app.on('ready', () => {
   electron.Menu.setApplicationMenu(appMenu)
 
   createMainWindow()
-  createProxyWindow().on('ready-to-show', () => sendToProxyWindow(START_PROXY))
+  const proxyWindow = createProxyWindow()
+  proxyWindow.on('ready-to-show', () => {
+    sendToProxyWindow(START_PROXY)
+    if (process.env['DEBUG']) {
+      proxyWindow.show()
+      proxyWindow.toggleDevTools()
+    }
+  })
 })
